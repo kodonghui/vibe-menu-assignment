@@ -2,7 +2,7 @@ spring:
   application:
     name: vibe-menu-api
   profiles:
-    default: dev
+    default: mysql
   jackson:
     deserialization:
       fail-on-null-for-primitives: false

@@ -7,6 +7,7 @@
 - 디자인은 Claude Design에서 진행한다.
 - 나머지 구현·준비를 수행하고 Claude에 줄 프롬프트를 제공한다.
 - Claude 디자인 아티팩트 `8ENM2HMyuBCMpbKrF8b1J3`를 전달하고, 같은 대화에서 "끝까지 구현"을 요청했다.
+- 이후 같은 날 "MySQL로 만들어놔"라고 요청했다. 이 직접 요청을 근거로 기본 실행 DB를 MySQL로 바꾼다. 앞선 H2 선택은 현재 기본 실행 방식이 아니다.
 
 첨부 수업 자료 원본 ID: cc6542cc-c883-4eeb-be96-796e3c0bae00 / 붙여넣은 텍스트.txt.
 이번에 읽은 버전: 2026-09-30 로컬 첨부본, 1227줄.
@@ -18,7 +19,13 @@ PokeAPI에만 적용되는 응답 URL 추종·종족값·타입 필터를 메뉴
 - backend: 06_fronted/99_vibe_design_practice/vibe-design-practice/chap06-spring-data-jpa.
   강의의 04_spring/original_lecture_source/03_spring_data_jpa/chap06-spring-data-jpa를 기반으로 Swagger가 보충된 예제.
   엔티티·DTO·Repository·Service·Controller·응답/오류 계약을 재사용했다.
-  새 구성: 포트/CORS 환경설정, dev H2 파일 DB, MySQL 프로필, 최초 데모 데이터, 독립 테스트 DB, JPA CRUD 검사.
+  새 구성: 포트/CORS 환경설정, 기본 MySQL 프로필, 명시적 dev H2 파일 DB, 최초 데모 데이터, 독립 H2 테스트 DB, JPA CRUD 검사.
+- MySQL 실행 준비: Windows에 설치된 MySQL 8.0을 이용해 과제 전용 127.0.0.1:3307 인스턴스, utf8mb4 DB vibe_menu_assignment와 앱 계정 vibe_menu를 준비하는 scripts/start-mysql.ps1을 작성했다.
+  scripts/start-backend.ps1은 이 스크립트를 호출하고 서버 자식 프로세스에만 연결 환경변수를 전달한다.
+  start-backend.ps1의 MySqlBin·Port 옵션은 start-mysql.ps1로 전달한다. scripts/stop-backend.ps1은 과제 프로세스의 소유를 확인하고 Spring Boot·MySQL을 중단하며 DB 파일을 보존한다.
+  로컬 임의 비밀번호는 Git 제외 경로 backend/.runtime/mysql/connection.json에 저장하고 디렉터리 ACL을 설정한다. 기존 3306 수업 MySQL과 DB는 보존한다.
+  기존 H2의 메뉴 16개·카테고리 8개를 MySQL에 이관했고 모든 필드·ID·참조 관계 일치를 확인했다. 원본 H2 파일도 보존했다.
+  실제 MySQL 연결과 전체 10개 API 검사를 통과했다. 재시작 확인을 포함한 상세 범위는 [검증 기록](verification.md)에 기록한다. H2 단위 테스트 결과와 실제 MySQL 검사 결과는 구분한다.
 - frontend/src/api/menu.js, category.js: 위 참고 완성본의 API 어댑터를 재사용했다.
 - frontend/scripts/build-tokens.mjs: 참고 완성본의 변환 스크립트를 재사용하고 radius·opacity 출력을 보충했다.
 - frontend/design/montage.tokens.json: 참고 완성본에서 추출해 둔 Montage 토큰을 재사용했다.

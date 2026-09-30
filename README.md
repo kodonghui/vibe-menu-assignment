@@ -2,6 +2,8 @@
 
 Spring Boot REST API와 React를 연결한 메뉴 관리 앱입니다.
 사용자가 전달한 **Claude 디자인**을 공통 헤더·카드·상세·등록/수정 폼에 적용하고 실제 CRUD 검증을 마쳤습니다.
+2026-09-30 사용자의 "MySQL로 만들어놔" 요청에 따라 기본 실행 DB를 MySQL로 전환했습니다.
+MySQL 실제 연결과 전체 10개 API 검사를 통과했고, 기존 H2의 메뉴 16개·카테고리 8개를 모든 필드와 ID·참조 관계까지 보존해 이관했습니다.
 제출 마감: 2026-10-13(화) 23:59. 제출물: Spring Boot와 React 코드가 함께 있는 GitHub 저장소 URL.
 
 제출용 저장소: [kodonghui/vibe-menu-assignment](https://github.com/kodonghui/vibe-menu-assignment).
@@ -22,6 +24,7 @@ Spring Boot REST API와 React를 연결한 메뉴 관리 앱입니다.
 처음 공부할 때는 [학습 백과사전](docs/encyclopedia.html)을 브라우저에서 여세요.
 컴퓨터 밖에서도 읽을 수 있는 [Sites 백과사전](https://menu-app-fullstack-encyclopedia.elddlwkd.chatgpt.site)도 등록했습니다. 기본 접근은 본인 계정 전용입니다.
 15개 장·94개 용어·15개 도해를 실제 과제 코드와 연결했습니다.
+백과사전은 처음 준비한 H2 구성의 학습 기록입니다. 현재 앱의 MySQL 실행 방법과 검증 결과는 이 README와 docs/verification.md를 기준으로 확인하세요.
 첫 화면의 **세 질문부터 읽기 → 등록 흐름 따라가기 → 02 메뉴 하나의 여행** 순서로 시작하세요.
 단계별 등록 예시는 학습용이며 API 요청이나 DB 변경을 하지 않습니다.
 클릭 가능한 코드·공식 자료 출처는 [Markdown 원고](docs/encyclopedia.md)에 있습니다.
@@ -37,7 +40,7 @@ Spring Boot REST API와 React를 연결한 메뉴 관리 앱입니다.
   api-docs.json        실제 실행 서버에서 추출한 OpenAPI
   design-handoff/      Claude Design 프롬프트·화면 범위·토큰·명세 사본
   docs/                API 계약·출처·실제 검사 결과
-  scripts/             API 검사·명세 추출·토큰 검사
+  scripts/             MySQL·서버 실행, API 검사·명세 추출·토큰 검사
 ~~~
 
 [과제 현황판](https://app.notion.com/p/3ebbf16cc3ec817f9f9cc0456adf2b18) /
@@ -73,15 +76,24 @@ git clone https://github.com/kodonghui/vibe-menu-assignment.git
 Set-Location vibe-menu-assignment
 ~~~
 
-필요한 환경: Java 17, Node.js 20.19+ 또는 22.12+. Gradle은 포함된 wrapper를 사용합니다.
+필요한 환경: Java 17, Node.js 20.19+ 또는 22.12+, Windows에 설치된 MySQL 8.0.
+Gradle은 포함된 wrapper를 사용합니다. MySQL 설치의 기본 경로는 `C:\Program Files\MySQL\MySQL Server 8.0\bin`입니다.
 현재 검사 환경의 정확한 버전은 docs/verification.md에 기록합니다.
 React 생성은 공식 Vite 템플릿의 react + eslint 옵션을 사용했습니다.
 [Vite 공식 시작 안내](https://vite.dev/guide/).
 
 터미널 1 — 서버:
 ~~~powershell
-Set-Location backend
-.\gradlew.bat bootRun --console=plain
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start-backend.ps1
+~~~
+
+이 스크립트는 `start-mysql.ps1`로 과제 전용 MySQL을 준비하고 Spring Boot를 백그라운드에서 실행합니다.
+백엔드 JAR이 없으면 Gradle wrapper로 빌드하며, 준비가 완료되면 터미널로 돌아옵니다.
+MySQL이 다른 경로에 설치되어 있으면 아래처럼 서버 실행 스크립트에 경로를 지정합니다.
+`start-backend.ps1`은 `-MySqlBin`과 `-Port`를 DB 준비 스크립트에 전달합니다. 기본 DB 포트는 3307입니다.
+
+~~~powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start-backend.ps1 -MySqlBin 'D:\MySQL\MySQL Server 8.0\bin'
 ~~~
 
 터미널 2 — React:
@@ -99,28 +111,54 @@ npm.cmd run dev
 기존 8080 서버와 충돌하지 않게 8090/5175를 사용합니다.
 React는 strictPort로 고정되어 포트가 사용 중이면 오류를 알립니다. 기존 앱을 임의 종료하지 않습니다.
 이미 실행 중이면 위 명령으로 두 번째 서버를 띄우지 말고 현재 주소를 사용하세요.
-종료는 실행한 터미널에서 Ctrl+C입니다.
+React는 실행한 터미널에서 Ctrl+C로 종료합니다. 보조 스크립트가 실행한 MySQL·Spring Boot는 백그라운드 프로세스입니다.
+실행 로그와 PID는 `backend/.runtime/`에 있으며, 문제 발생 시 `api.out.log`·`api.err.log`와 `mysql/mysql-error.log`를 확인하세요.
 
-## 데이터와 MySQL
+과제의 Spring Boot와 MySQL을 중단하려면 과제 폴더에서 다음 명령을 실행합니다.
+이 스크립트는 실행 파일·과제 경로·프로필로 서버 소유를 확인하며, MySQL은 정상 종료하고 DB 파일을 보존합니다.
 
-기본 dev 프로필은 backend/.runtime/data/vibe-menu.mv.db에 H2 파일 DB를 만듭니다.
-강의의 기존 MySQL menudb는 사용하지 않습니다.
-처음 빈 과제 DB를 만들 때만 8개 카테고리와 16개 예시 메뉴가 생성됩니다.
-재실행해도 사용자가 등록·수정한 데이터가 유지되고, 비워진 메뉴를 자동 복원하지 않습니다.
-이 데이터는 과제 데모용입니다.
-
-MySQL로 실행하려면 관리자 권한으로 과제 전용 DB를 준비합니다:
-~~~sql
-CREATE DATABASE IF NOT EXISTS vibe_menu_assignment CHARACTER SET utf8mb4;
-~~~
-해당 DB에만 권한이 있는 자신의 로컬 계정을 사용하고, 터미널 환경변수로 연결합니다:
 ~~~powershell
-$env:DB_USERNAME = '<과제 DB 계정>'
-$env:DB_PASSWORD = '<로컬 비밀번호>'
-.\gradlew.bat bootRun --args='--spring.profiles.active=mysql' --console=plain
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/stop-backend.ps1
 ~~~
-비밀번호를 파일·Git·스크린샷에 남기지 않습니다. 필요하면 DB_URL도 환경변수로 설정합니다.
-현재 실제 CRUD 검증은 H2 프로필로 수행했습니다. MySQL 프로필은 연결 설정을 제공하며 실제 연결 검증은 별도입니다.
+
+다시 실행하려면 같은 폴더에서 `scripts/start-backend.ps1`을 실행합니다.
+다른 MySQL 설치 경로로 실행했다면 중단·재실행할 때도 같은 `-MySqlBin` 값을 지정하세요.
+백엔드 코드를 수정했다면 중단 후 JAR을 다시 빌드하고 시작합니다.
+
+~~~powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/stop-backend.ps1
+Set-Location backend
+.\gradlew.bat bootJar --console=plain
+Set-Location '..'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start-backend.ps1
+~~~
+
+## 과제 전용 MySQL과 데이터
+
+기본 Spring 프로필은 `mysql`입니다. Windows 실행 스크립트는 설치된 MySQL 8.0 바이너리로
+**127.0.0.1:3307**에 별도 인스턴스를 실행하고 `vibe_menu_assignment` DB와 `vibe_menu` 앱 계정을 준비합니다.
+데이터 디렉터리는 `backend/.runtime/mysql/data`이며 DB·테이블은 `utf8mb4`를 사용합니다.
+기존 3306 MySQL 서버와 수업용 DB는 변경하지 않습니다.
+
+로컬 계정의 임의 비밀번호와 연결 설정은 Git에서 제외되는 `backend/.runtime/mysql/connection.json`에 저장합니다.
+해당 디렉터리는 현재 Windows 사용자·SYSTEM·관리자만 접근하도록 ACL을 설정합니다.
+`start-backend.ps1`은 연결값을 서버 자식 프로세스의 `DB_URL`·`DB_USERNAME`·`DB_PASSWORD`로 전달하고
+자신이 실행되는 프로세스의 기존 환경변수는 복원합니다. 연결 파일·비밀번호·DB 파일을 Git이나 스크린샷에 넣지 마세요.
+
+두 테이블이 모두 빈 과제 DB를 처음 실행할 때만 8개 카테고리와 16개 예시 메뉴를 생성합니다.
+카테고리 또는 메뉴가 이미 있으면 예시 초기화를 건너뜁니다. 재실행해도 기존 메뉴를 덮어쓰거나 자동 복원하지 않습니다.
+이 데이터는 과제 데모용입니다. 이번 전환에서는 기존 H2의 메뉴 16개·카테고리 8개를 MySQL에 이관하고
+이름·가격·주문 상태·ID·참조 관계의 모든 필드 일치를 확인했습니다. 원본 H2 파일도 보존했습니다.
+실제 연결·검사·재시작 확인 범위는 [검증 기록](docs/verification.md)을 확인하세요.
+
+H2는 단위 테스트와 명시적으로 선택한 `dev` 프로필에서만 사용합니다.
+MySQL 대신 기존 H2 파일 DB로 실행할 필요가 있을 때는 아래처럼 프로필을 지정합니다.
+
+~~~powershell
+Set-Location backend
+.\gradlew.bat bootRun --args='--spring.profiles.active=dev' --console=plain
+~~~
+H2 파일은 `backend/.runtime/data/vibe-menu.mv.db`에 있습니다. 이 대체 실행 결과를 MySQL 검증으로 보고하지 않습니다.
 
 ## 기능과 디자인 적용 지점
 
@@ -152,6 +190,7 @@ node scripts/export-api.mjs
 
 API 검사·명세 추출은 서버가 실행 중일 때 사용합니다.
 API 검사는 자신이 만든 검사 메뉴만 정리하며 기존 예시 메뉴를 변경하지 않습니다.
+Gradle 단위 테스트는 격리된 H2 메모리 DB를 사용합니다. MySQL 연결·영속화 검증은 실행 서버의 API·브라우저 검사로 별도 확인합니다.
 [검증 결과](docs/verification.md)는 실제 실행 범위와 아직 남은 일을 구분합니다.
 
 ## 출처와 제출

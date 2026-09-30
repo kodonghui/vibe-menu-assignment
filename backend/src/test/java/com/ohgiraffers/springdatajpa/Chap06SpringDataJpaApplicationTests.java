@@ -2,6 +2,7 @@ package com.ohgiraffers.springdatajpa;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import com.ohgiraffers.springdatajpa.dto.MenuDTO;
@@ -14,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
     "spring.datasource.url=jdbc:h2:mem:vibe-test;MODE=MySQL;DB_CLOSE_DELAY=-1",
     "spring.jpa.hibernate.ddl-auto=create-drop"
 })
+// 기본 MySQL 실행과 분리한 인메모리 DB에서 검사한다.
+@ActiveProfiles("dev")
 @Transactional
 class Chap06SpringDataJpaApplicationTests {
 

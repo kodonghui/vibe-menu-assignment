@@ -2,6 +2,7 @@
 
 기준: 과제 backend의 컨트롤러와 실행 서버에서 추출한 ../api-docs.json.
 2026-09-30 사용자 요청에 따라 chap06 강의 API 계약을 재사용한다.
+같은 날 사용자의 "MySQL로 만들어놔" 요청으로 기본 실행 DB를 MySQL로 전환한다. HTTP·DTO 계약은 변경하지 않는다.
 
 ## 메뉴 저장 흐름
 
@@ -13,7 +14,7 @@ sequenceDiagram
     participant UI as React 폼
     participant API as Axios API 계층
     participant Server as Spring Boot
-    participant DB as 과제 H2 DB
+    participant DB as 과제 MySQL DB
     User->>UI: 이름·가격·카테고리·상태 입력 후 저장
     UI->>UI: 필수값·가격 검증
     alt 입력 오류
@@ -38,6 +39,8 @@ sequenceDiagram
 ## 연결과 응답
 
 - 서버: http://localhost:8090. React: http://localhost:5175.
+- 기본 mysql 프로필의 Windows 실행 스크립트는 과제 전용 127.0.0.1:3307 인스턴스와 vibe_menu_assignment DB를 사용한다. 기존 3306 수업 DB는 변경하지 않는다.
+- H2는 격리된 단위 테스트와 명시적 dev 대체 실행에 사용한다. 실제 MySQL 검증 상태는 [검증 기록](verification.md)을 기준으로 한다.
 - 인증: 이번 과제에는 로그인·토큰 인증이 없다. CORS 허용은 인증이 아니다.
 - 정상 응답: { "httpStatus": 200, "message": "...", "result": { ... } }.
 - 오류 응답: { "code": "...", "description": "...", "detail": "..." }.
