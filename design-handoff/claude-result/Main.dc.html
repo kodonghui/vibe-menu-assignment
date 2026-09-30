@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>디자인 시스템 토큰</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./menu-ui.css">
+<link rel="stylesheet" href="./board.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div class="board" style="width: 1680px; height: 4500px">
+
+  <div class="boardHead">
+    <span class="label1 bold boardKicker">0 · 디자인 시스템</span>
+    <h1 class="title3 bold">메뉴 관리 · 디자인 토큰</h1>
+    <p class="body2-reading muted">첨부한 <span class="tok label2">montage.tokens.json</span> (2026-09-29 생성)을 변환한 <span class="tok label2">tokens.css</span> 를 한 글자도 바꾸지 않고 씁니다. 아래에는 이 디자인이 실제로 사용한 토큰만 모았습니다. 이름은 CSS 변수와 같고, 라이트와 다크가 같은 이름의 값만 바뀝니다. 색은 semantic 토큰만 쓰고 atomic 팔레트는 직접 쓰지 않았습니다.</p>
+  </div>
+
+  <div class="section">
+    <div class="sectionHead">
+      <h2 class="heading1 bold">색 · semantic</h2>
+      <span class="label1 muted">같은 이름, 테마별 값 (왼쪽 라이트 · 오른쪽 다크)</span>
+    </div>
+    <div class="cols2">
+      <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+        <div class="sheet" data-theme="{{t.key}}">
+          <div class="sheetHead">
+            <span class="heading2 bold">{{t.name}}</span>
+            <span class="label2 muted mono">{{t.selector}}</span>
+          </div>
+          <sc-for list="{{t.groups}}" as="g" hint-placeholder-count="5">
+            <div class="swatchGroup">
+              <div class="demoTitle"><span class="label1 bold">{{g.title}}</span><span class="label2 muted">{{g.note}}</span></div>
+              <div class="swatchGrid">
+                <sc-for list="{{g.swatches}}" as="sw" hint-placeholder-count="4">
+                  <div class="swatch">
+                    <div class="swatchChip" style="background: {{sw.css}}"></div>
+                    <div class="swatchText">
+                      <span class="label2 bold swatchName">{{sw.name}}</span>
+                      <span class="caption1 swatchHex">{{sw.hex}}</span>
+                      <span class="caption1 muted">{{sw.use}}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sectionHead">
+      <h2 class="heading1 bold">타입 스타일</h2>
+      <span class="label1 muted">글자 크기·행간·자간은 tokens.css 의 클래스만 사용 · 1rem = 16px 환산</span>
+    </div>
+    <table class="specTable">
+      <thead>
+        <tr>
+          <th class="label2 bold">클래스</th>
+          <th class="label2 bold">크기 / 행간</th>
+          <th class="label2 bold">자간</th>
+          <th class="label2 bold">굵기</th>
+          <th class="label2 bold">쓰이는 곳</th>
+          <th class="label2 bold">견본</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label2 mono">.title3.bold</td><td class="label2">24 / 32px</td><td class="label2">-0.023em</td><td class="label2">700</td>
+          <td class="label2">페이지 제목(h1), 상세 화면의 메뉴 이름</td>
+          <td><span class="title3 bold">소고기 비빔밥</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.heading2.bold</td><td class="label2">20 / 28px</td><td class="label2">-0.012em</td><td class="label2">600</td>
+          <td class="label2">브랜드 이름, 카드·상세 가격, 다이얼로그 제목</td>
+          <td><span class="heading2 bold">11,000원</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.headline1.bold</td><td class="label2">18 / 26px</td><td class="label2">-0.002em</td><td class="label2">600</td>
+          <td class="label2">카드의 메뉴 이름, 상태 안내 제목</td>
+          <td><span class="headline1 bold">아메리카노</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.body1</td><td class="label2">16 / 24px</td><td class="label2">+0.0057em</td><td class="label2">400</td>
+          <td class="label2">입력창·선택창 글자, 선택 카드 글자</td>
+          <td><span class="body1">이름을 입력해 주세요</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.body1.medium</td><td class="label2">16 / 24px</td><td class="label2">+0.0057em</td><td class="label2">500</td>
+          <td class="label2">상세 화면의 값(분류·메뉴 번호)</td>
+          <td><span class="body1 medium">한식</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.body2 / .body2.medium</td><td class="label2">15 / 22px</td><td class="label2">+0.0096em</td><td class="label2">400 / 500</td>
+          <td class="label2">알림·안내 문장, 내비게이션 링크</td>
+          <td><span class="body2">서버에 연결할 수 없습니다</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.label1.bold</td><td class="label2">14 / 20px</td><td class="label2">+0.0145em</td><td class="label2">600</td>
+          <td class="label2">버튼, 입력 라벨, 알림 제목</td>
+          <td><span class="label1 bold">메뉴 등록</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.label1 / .label1.medium</td><td class="label2">14 / 20px</td><td class="label2">+0.0145em</td><td class="label2">400 / 500</td>
+          <td class="label2">결과 개수, 뒤로가기 링크, 페이지 번호</td>
+          <td><span class="label1 medium">전체 23개</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.label2 / .label2.bold</td><td class="label2">13 / 18px</td><td class="label2">+0.0194em</td><td class="label2">400 / 600</td>
+          <td class="label2">주문 상태 배지, 카테고리 칩, 도움말, 오류 문구</td>
+          <td><span class="label2 bold">주문 가능</span></td>
+        </tr>
+        <tr>
+          <td class="label2 mono">.caption1</td><td class="label2">12 / 16px</td><td class="label2">+0.0252em</td><td class="label2">400</td>
+          <td class="label2">푸터, 메뉴 번호, 글자 수 카운터</td>
+          <td><span class="caption1">메뉴 번호 7</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="label1 muted">폰트 패밀리는 토큰에 없습니다. Montage 안내대로 Pretendard 를 기본으로 두고, 이 캔버스에서는 같은 계열로 보이는 Noto Sans KR 로 대신 그렸습니다. 자간 값이 Pretendard 기준이라 실제 앱에서 폭이 조금 달라질 수 있습니다.</p>
+  </div>
+
+  <div class="cols3">
+    <div class="section">
+      <div class="sectionHead"><h2 class="heading1 bold">간격</h2><span class="label1 muted">--space-*</span></div>
+      <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+        <sc-for list="{{spaces}}" as="s" hint-placeholder-count="12">
+          <div class="barRow">
+            <span class="label2 bold mono">{{s.name}}</span>
+            <div class="bar" style="width: {{s.px}}"></div>
+            <span class="caption1 muted">{{s.use}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2 class="heading1 bold">모서리</h2><span class="label1 muted">--radius-*</span></div>
+      <div class="shapeGrid">
+        <sc-for list="{{radii}}" as="r" hint-placeholder-count="8">
+          <div class="shapeItem">
+            <div class="shape" style="border-radius: {{r.css}}"></div>
+            <div style="display: flex; flex-direction: column; gap: var(--space-2); min-width: 0">
+              <span class="label2 bold mono">{{r.name}}</span>
+              <span class="caption1 muted">{{r.px}}</span>
+              <span class="caption1 muted">{{r.use}}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2 class="heading1 bold">그림자·기타</h2><span class="label1 muted">--shadow-* · --z-* · --opacity-*</span></div>
+      <div style="display: flex; flex-direction: column; gap: var(--space-16)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+          <div class="shadowBox" style="box-shadow: var(--shadow-normal-small)"><span class="label2 bold mono">--shadow-normal-small</span></div>
+          <span class="caption1 muted">메뉴 카드 호버</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+          <div class="shadowBox" style="box-shadow: var(--shadow-normal-medium)"><span class="label2 bold mono">--shadow-normal-medium</span></div>
+          <span class="caption1 muted">시안 프레임(앱 화면 아님)</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+          <div class="shadowBox" style="box-shadow: var(--shadow-normal-xlarge)"><span class="label2 bold mono">--shadow-normal-xlarge</span></div>
+          <span class="caption1 muted">확인 다이얼로그</span>
+        </div>
+        <table class="specTable">
+          <tbody>
+            <tr><td class="label2 mono">--z-modal</td><td class="label2">1300 · 다이얼로그 딤 레이어</td></tr>
+            <tr><td class="label2 mono">--opacity-52</td><td class="label2">스켈레톤 깜빡임 (로딩 표시)</td></tr>
+            <tr><td class="label2 mono">breakpoint.sm</td><td class="label2">768px · 이 미만이 모바일 레이아웃 (컨테이너 767px 이하)</td></tr>
+            <tr><td class="label2 mono">--space-48</td><td class="label2">버튼·입력창·선택창·페이지 버튼의 최소 높이(터치 대상)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":4500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // [토큰 이름, 라이트 값, 다크 값, 쓰이는 곳] — 값은 tokens.css 에서 옮긴 것
+    const groups = [
+      { title: '브랜드', note: 'primary', items: [
+        ['primary-normal', '#0066FF', '#3385FF', '주요 버튼(라이트)·링크·포커스 링'],
+        ['primary-strong', '#005EEB', '#1A75FF', '주요 버튼 호버(라이트)'],
+        ['primary-heavy', '#0054D1', '#0066FF', '주요 버튼·현재 페이지(다크, 흰 글자 대비 확보)'],
+      ]},
+      { title: '텍스트', note: 'label · static', items: [
+        ['label-strong', '#000000', '#ffffff', '제목·가격·카드 이름'],
+        ['label-normal', '#171719', '#F7F7F8', '기본 본문·입력 글자'],
+        ['label-neutral', '#2E2F33E0', '#C2C4C8E0', '보조 글자·아이콘·메타 (8:1 이상)'],
+        ['label-alternative', '#37383C9C', '#AEB0B69C', '입력 테두리·플레이스홀더 (3.6~3.9:1, 본문 금지)'],
+        ['label-disable', '#37383C29', '#989BA229', '비활성 버튼 글자'],
+        ['static-white', '#ffffff', '#ffffff', '채운 버튼 위 글자(테마 고정)'],
+        ['static-black', '#000000', '#000000', '다크 위험(채움) 버튼 글자'],
+      ]},
+      { title: '배경·채움', note: 'background · fill · interaction', items: [
+        ['background-normal-normal', '#ffffff', '#1B1C1E', '헤더·푸터·입력창 바탕'],
+        ['background-normal-alternative', '#F7F7F8', '#0F0F10', '페이지 배경(카드와 구분)'],
+        ['background-elevated-normal', '#ffffff', '#212225', '카드·패널·다이얼로그'],
+        ['fill-normal', '#70737C14', '#70737C38', '카테고리 칩·아이콘 원·호버'],
+        ['fill-strong', '#70737C29', '#70737C47', '스켈레톤·처리 중 버튼'],
+        ['interaction-inactive', '#989BA2', '#5A5C63', '보조 버튼 호버 테두리'],
+        ['interaction-disable', '#F4F4F5', '#2E2F33', '비활성 버튼·입력 배경'],
+      ]},
+      { title: '선', note: 'line', items: [
+        ['line-solid-normal', '#E1E2E4', '#37383C', '보조 버튼 테두리·빈 상태 점선'],
+        ['line-solid-neutral', '#EAEBEC', '#333438', '카드·헤더·구분선'],
+        ['line-solid-alternative', '#F4F4F5', '#2E2F33', '카드 안쪽 구분선'],
+        ['line-primary-strong', '#0066FF6E', '#3385FF6E', '카드 호버 테두리'],
+      ]},
+      { title: '상태', note: 'status · accent', items: [
+        ['status-negative', '#FF4242', '#FF6363', '오류 입력 테두리·다크 위험(채움) 배경'],
+        ['accent-foreground-red', '#E52222', '#FF6363', '오류 문구·위험 버튼·오류 아이콘'],
+        ['accent-foreground-green', '#009632', '#1ED45A', '주문 가능·저장 성공 아이콘'],
+        ['background-status-negative', '#FF424214', '#FF636314', '주문 불가 배지·오류 알림 바탕'],
+        ['background-status-positive', '#00BF4014', '#1ED45A14', '주문 가능 배지·성공 알림 바탕'],
+        ['line-status-negative-normal', '#FF42426E', '#FF63636E', '주문 불가 배지·오류 알림 테두리'],
+        ['line-status-negative-strong', '#FF424285', '#FF636385', '위험 버튼(외곽) 테두리'],
+        ['line-status-positive-normal', '#00BF406E', '#1ED45A6E', '주문 가능 배지·성공 알림 테두리'],
+      ]},
+      { title: '기타', note: 'material', items: [
+        ['material-dimmer', '#17171985', '#171719BD', '다이얼로그 뒤 딤 배경'],
+      ]},
+    ];
+    const build = (key, idx) => groups.map(g => ({
+      title: g.title, note: g.note,
+      swatches: g.items.map(i => ({ name: '--' + i[0], hex: i[idx], css: 'var(--' + i[0] + ')', use: i[3] })),
+    }));
+    const themes = [
+      { key: 'light', name: '라이트', selector: ':root', groups: build('light', 1) },
+      { key: 'dark', name: '다크', selector: '[data-theme="dark"]', groups: build('dark', 2) },
+    ];
+    const spaces = [
+      ['2', '선 두께·포커스 링 오프셋'], ['4', '배지 세로·페이지 버튼 간격'], ['6', '라벨 안쪽 간격'],
+      ['8', '라벨↔입력·버튼 안 아이콘 간격'], ['10', '라디오 점 크기'], ['12', '카드 안 요소·필터 간격(모바일)'],
+      ['16', '카드 그리드·입력 좌우 패딩·모바일 좌우 여백'], ['20', '카드 패딩·아이콘 크기·필드 간격'],
+      ['24', '패널 패딩·섹션 간격'], ['32', '데스크톱 좌우 여백·헤더'], ['40', '데스크톱 본문 위 여백'],
+      ['48', '컨트롤 최소 높이(터치 대상)'], ['56', '빈 상태 아이콘 원'], ['64', '데스크톱 내비 높이'],
+      ['72', '가격 입력 접미사 여백'], ['80', '페이지 요약 최소 폭'],
+    ].map(s => ({ name: '--space-' + s[0], px: s[0] + 'px', use: s[1] }));
+    const radii = [
+      ['6', '6px', '카테고리 칩'], ['8', '8px', '로고 마크·페이지 버튼'], ['10', '10px', '버튼'],
+      ['12', '12px', '입력·카드·패널·알림'], ['16', '16px', '시안 프레임(앱 화면 아님)'], ['20', '20px', '확인 다이얼로그'],
+      ['999', '999px', '주문 상태 배지'], ['50pct', '50%', '라디오·빈 상태 아이콘'],
+    ].map(r => ({ name: '--radius-' + r[0], px: r[1], css: 'var(--radius-' + r[0] + ')', use: r[2] }));
+    return { themes, spaces, radii };
+  }
+}
+</script>
+</body>
+</html>

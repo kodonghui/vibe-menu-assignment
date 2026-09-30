@@ -1,0 +1,11 @@
+/* 공통 폰트와 기본 HTML 요소. 디자인 값은 생성된 Montage 토큰을 사용한다. */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; color: var(--label-normal); background: var(--background-normal-alternative); font-family: "Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif; }
+h1, h2, h3, p, dl, dd, dt, ul, ol { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; letter-spacing: inherit; color: inherit; margin: 0; }
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: var(--space-2) solid var(--primary-normal); outline-offset: var(--space-2); }
+button:disabled { cursor: not-allowed; }
+fieldset { min-width: 0; }

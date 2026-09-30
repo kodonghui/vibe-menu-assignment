@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: vibe-menu-api
+  profiles:
+    default: dev
+  jackson:
+    deserialization:
+      fail-on-null-for-primitives: false
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        max-page-size: 100
+  jpa:
+    open-in-view: false
+server:
+  address: 127.0.0.1
+  port: ${SERVER_PORT:8090}
+app:
+  cors:
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:5175}
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    operations-sorter: method
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

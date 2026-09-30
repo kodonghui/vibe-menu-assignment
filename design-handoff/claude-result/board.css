@@ -1,0 +1,72 @@
+/* =====================================================================
+   board.css — 디자인 캔버스 보드(시안 시트) 전용 보조 스타일.
+   앱 코드가 아니다. 구현 시 가져가지 않는다. 값은 여기서도 tokens.css 변수만 쓴다.
+   ===================================================================== */
+
+.board { display: flex; flex-direction: column; gap: var(--space-48); padding: var(--space-64); background: var(--background-normal-normal); }
+.boardHead { display: flex; flex-direction: column; gap: var(--space-8); }
+.boardHead p { max-width: 960px; }
+.boardKicker { color: var(--primary-normal); }
+.muted { color: var(--label-neutral); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.section { display: flex; flex-direction: column; gap: var(--space-24); }
+.sectionHead { display: flex; align-items: baseline; gap: var(--space-12); padding-bottom: var(--space-12); border-bottom: var(--space-1) solid var(--line-solid-normal); }
+.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-48); align-items: start; }
+.cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-48); align-items: start; }
+
+.frameRow { display: flex; align-items: flex-start; gap: var(--space-80); }
+.frameGrid { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-48) var(--space-80); }
+.frameItem { display: flex; flex-direction: column; gap: var(--space-12); flex: none; }
+.frameLabel { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-8); color: var(--label-neutral); }
+.stateBlock { display: flex; flex-direction: column; gap: var(--space-16); padding-bottom: var(--space-32); border-bottom: var(--space-1) solid var(--line-solid-neutral); }
+.stateBlock:last-child { border-bottom: 0; }
+.stateHead { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-8) var(--space-12); }
+.stateNo { display: inline-grid; place-items: center; min-width: var(--space-32); height: var(--space-32); padding: 0 var(--space-8); border-radius: var(--radius-8); background: var(--primary-normal); color: var(--static-white); }
+
+.sheet { display: flex; flex-direction: column; gap: var(--space-32); padding: var(--space-24); background: var(--background-normal-alternative); color: var(--label-normal); border: var(--space-1) solid var(--line-solid-neutral); border-radius: var(--radius-16); }
+.sheetHead { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); }
+.demo { display: flex; flex-direction: column; gap: var(--space-12); }
+.demoTitle { display: flex; align-items: baseline; gap: var(--space-8); padding-bottom: var(--space-8); border-bottom: var(--space-1) solid var(--line-solid-neutral); }
+.demoRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12); }
+.demoGrid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16); align-items: start; }
+.matrix { display: grid; gap: var(--space-12); align-items: center; }
+.cellHead { color: var(--label-neutral); }
+.slot { display: grid; place-items: center; min-height: 220px; border: var(--space-1) dashed var(--line-primary-strong); border-radius: var(--radius-12); color: var(--primary-normal); text-align: center; padding: var(--space-16); }
+
+/* 토큰 스와치 */
+.swatchGroup { display: flex; flex-direction: column; gap: var(--space-12); }
+.swatchGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-12) var(--space-16); }
+.swatch { display: flex; align-items: flex-start; gap: var(--space-12); min-width: 0; }
+.swatchChip { flex: none; width: var(--space-48); height: var(--space-48); border: var(--space-1) solid var(--line-solid-normal); border-radius: var(--radius-8); }
+.swatchText { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.swatchName { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--label-strong); overflow-wrap: anywhere; }
+.swatchHex { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--label-neutral); }
+
+/* 간격·모서리·그림자 견본 */
+.barRow { display: grid; grid-template-columns: 96px 88px minmax(0, 1fr); align-items: center; gap: var(--space-12); min-height: var(--space-32); }
+.bar { height: var(--space-12); border-radius: var(--radius-6); background: var(--primary-normal); }
+.shapeGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16) var(--space-16); }
+.shapeItem { display: flex; align-items: center; gap: var(--space-12); }
+.shape { flex: none; width: var(--space-56); height: var(--space-56); background: var(--fill-normal); border: var(--space-2) solid var(--primary-normal); }
+.shadowBox { display: grid; place-items: center; height: var(--space-80); background: var(--background-elevated-normal); border-radius: var(--radius-12); border: var(--space-1) solid var(--line-solid-alternative); }
+
+/* 명세 표 */
+.specTable { width: 100%; border-collapse: collapse; background: var(--background-normal-normal); border: var(--space-1) solid var(--line-solid-neutral); border-radius: var(--radius-12); }
+.specTable th, .specTable td { padding: var(--space-12) var(--space-16); text-align: left; vertical-align: top; border-top: var(--space-1) solid var(--line-solid-neutral); }
+.specTable th { background: var(--background-normal-alternative); color: var(--label-neutral); border-top: 0; }
+.specTable td { color: var(--label-normal); }
+.specTable td:first-child { color: var(--label-strong); }
+/* 데이터 기반 명세 표 (sc-for 로 행을 만들기 위한 div 그리드) */
+.docTable { display: flex; flex-direction: column; overflow: hidden; background: var(--background-normal-normal); border: var(--space-1) solid var(--line-solid-neutral); border-radius: var(--radius-12); }
+.docRow { display: grid; border-top: var(--space-1) solid var(--line-solid-neutral); }
+.docRow:first-child { border-top: 0; }
+.docRow--head { background: var(--background-normal-alternative); color: var(--label-neutral); }
+.docCell { min-width: 0; padding: var(--space-12) var(--space-16); color: var(--label-normal); overflow-wrap: anywhere; }
+.docRow--head .docCell { color: var(--label-neutral); }
+.docCell--key { color: var(--label-strong); }
+.docCell p + p { margin-top: var(--space-4); }
+.docTitle { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-8) var(--space-12); }
+.docNote { max-width: 960px; }
+.tok { display: inline-block; margin: var(--space-2) var(--space-2) var(--space-2) 0; padding: 0 var(--space-6); border-radius: var(--radius-6); background: var(--fill-normal); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--label-normal); overflow-wrap: anywhere; }
+.list { display: flex; flex-direction: column; gap: var(--space-8); padding-left: var(--space-20); list-style: disc; }
+.callout { display: flex; gap: var(--space-12); padding: var(--space-16); border: var(--space-1) solid var(--line-primary-normal); border-radius: var(--radius-12); background: var(--background-normal-alternative); }

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>메뉴 등록·수정 폼</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./menu-ui.css">
+<link rel="stylesheet" href="./board.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div class="board" style="width: 2780px; height: 2600px">
+
+  <div class="boardHead">
+    <span class="label1 bold boardKicker">4 · 메뉴 등록·수정 공용 폼</span>
+    <h1 class="title3 bold">한 개의 폼, 두 가지 시작 상태 — 빈 입력과 기존 값이 채워진 입력</h1>
+    <p class="body2-reading muted">/menus/new 와 /menus/:menuCode/edit 가 같은 폼을 씁니다. 등록은 모두 비어 있고(주문 상태만 “주문 가능”이 기본 선택), 수정은 기존 값이 채워져 있습니다. 취소는 등록이면 목록, 수정이면 상세로 돌아갑니다. 저장에 성공하면 상세 화면으로 이동합니다.</p>
+  </div>
+
+  <div class="frameGrid">
+    <sc-for list="{{frames}}" as="f" hint-placeholder-count="4">
+      <div class="frameItem">
+        <div class="frameLabel"><span class="label1 bold">{{f.label}}</span><span class="chip label2 medium">{{f.tag}}</span></div>
+        <div class="frame {{f.frameClass}}" data-theme="{{f.theme}}">
+
+          <header class="siteHeader">
+            <div class="headerInner">
+              <a class="brand" href="02-menu-list.dc.html">
+                <span class="brandMark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></span>
+                <span class="heading2 bold">메뉴 관리</span>
+              </a>
+              <nav class="nav" aria-label="주요 메뉴">
+                <a class="navLink body2 medium" href="02-menu-list.dc.html" aria-current="{{f.curList}}">메뉴 목록</a>
+                <a class="navLink body2 medium" href="04-menu-form.dc.html" aria-current="{{f.curNew}}">메뉴 등록</a>
+              </nav>
+            </div>
+          </header>
+
+          <main class="siteMain">
+            <div class="page page--narrow">
+
+              <div class="pageHeader">
+                <div class="pageHeaderText">
+                  <a class="backLink label1 medium" href="{{f.backHref}}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>{{f.backText}}</a>
+                  <h1 class="pageTitle title3 bold" id="ft-{{f.key}}">{{f.title}}</h1>
+                </div>
+              </div>
+
+              <form class="panel formCard" aria-labelledby="ft-{{f.key}}" novalidate>
+
+                <div class="field">
+                  <label class="fieldLabel label1 bold" for="fn-{{f.key}}">메뉴 이름 <span class="fieldRequired label2 medium">필수</span></label>
+                  <div class="control"><input class="input body1" id="fn-{{f.key}}" type="text" maxlength="100" value="{{f.name}}" placeholder="예: 소고기 비빔밥" aria-describedby="fnh-{{f.key}}"></div>
+                  <div class="fieldMeta label2" id="fnh-{{f.key}}"><span>100자 이내로 입력합니다.</span><span class="counter caption1">{{f.nameCount}} / 100</span></div>
+                </div>
+
+                <div class="field">
+                  <label class="fieldLabel label1 bold" for="fp-{{f.key}}">가격 <span class="fieldRequired label2 medium">필수</span></label>
+                  <div class="control">
+                    <input class="input hasSuffix body1" id="fp-{{f.key}}" type="text" inputmode="numeric" value="{{f.price}}" placeholder="예: 11,000" aria-describedby="fph-{{f.key}}">
+                    <span class="suffix body1" aria-hidden="true">원</span>
+                  </div>
+                  <div class="fieldMeta label2" id="fph-{{f.key}}"><span>0 이상의 정수로 입력합니다.</span></div>
+                </div>
+
+                <div class="field">
+                  <label class="fieldLabel label1 bold" for="fc-{{f.key}}">하위 카테고리 <span class="fieldRequired label2 medium">필수</span></label>
+                  <div class="control">
+                    <sc-if value="{{f.catNone}}" hint-placeholder-val="{{ true }}">
+                      <select class="input select body1" id="fc-{{f.key}}">
+                        <option value="" selected>하위 카테고리를 선택하세요</option>
+                        <optgroup label="식사"><option>한식</option></optgroup>
+                        <optgroup label="음료"><option>커피</option></optgroup>
+                        <optgroup label="디저트"><option>베이커리</option></optgroup>
+                      </select>
+                    </sc-if>
+                    <sc-if value="{{f.catKor}}" hint-placeholder-val="{{ false }}">
+                      <select class="input select body1" id="fc-{{f.key}}">
+                        <option value="">하위 카테고리를 선택하세요</option>
+                        <optgroup label="식사"><option selected>한식</option></optgroup>
+                        <optgroup label="음료"><option>커피</option></optgroup>
+                        <optgroup label="디저트"><option>베이커리</option></optgroup>
+                      </select>
+                    </sc-if>
+                    <sc-if value="{{f.catBakery}}" hint-placeholder-val="{{ false }}">
+                      <select class="input select body1" id="fc-{{f.key}}">
+                        <option value="">하위 카테고리를 선택하세요</option>
+                        <optgroup label="식사"><option>한식</option></optgroup>
+                        <optgroup label="음료"><option>커피</option></optgroup>
+                        <optgroup label="디저트"><option selected>베이커리</option></optgroup>
+                      </select>
+                    </sc-if>
+                    <svg class="icon selectChevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                  </div>
+                </div>
+
+                <fieldset class="field">
+                  <legend class="fieldLabel label1 bold">주문 상태 <span class="fieldRequired label2 medium">필수</span></legend>
+                  <sc-if value="{{f.ok}}" hint-placeholder-val="{{ true }}">
+                    <div class="choiceGroup">
+                      <label class="choice"><input type="radio" name="fo-{{f.key}}" value="Y" checked><span class="choiceBox body1"><span class="radioMark"></span>주문 가능</span></label>
+                      <label class="choice"><input type="radio" name="fo-{{f.key}}" value="N"><span class="choiceBox body1"><span class="radioMark"></span>주문 불가</span></label>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{f.notOk}}" hint-placeholder-val="{{ false }}">
+                    <div class="choiceGroup">
+                      <label class="choice"><input type="radio" name="fo-{{f.key}}" value="Y"><span class="choiceBox body1"><span class="radioMark"></span>주문 가능</span></label>
+                      <label class="choice"><input type="radio" name="fo-{{f.key}}" value="N" checked><span class="choiceBox body1"><span class="radioMark"></span>주문 불가</span></label>
+                    </div>
+                  </sc-if>
+                </fieldset>
+
+                <div class="formActions">
+                  <a class="btn btnSecondary label1 bold" href="{{f.backHref}}">취소</a>
+                  <button type="submit" class="btn btnPrimary label1 bold">저장</button>
+                </div>
+
+              </form>
+
+            </div>
+          </main>
+
+          <footer class="siteFooter">
+            <span class="caption1">메뉴 관리</span>
+            <span class="caption1">Spring Boot REST API · React 연동 과제</span>
+          </footer>
+
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2780,"height":2600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // 디자인 샘플 데이터 (실제 서버 응답이 아님)
+    const create = { title: '메뉴 등록', backText: '메뉴 목록으로', backHref: '02-menu-list.dc.html', curList: 'false', curNew: 'page',
+      name: '', nameCount: 0, price: '', catNone: true, catKor: false, catBakery: false, ok: true, notOk: false };
+    const editBibim = { title: '메뉴 수정', backText: '메뉴 상세로', backHref: '03-menu-detail.dc.html', curList: 'page', curNew: 'false',
+      name: '소고기 비빔밥', nameCount: 7, price: '11,000', catNone: false, catKor: true, catBakery: false, ok: true, notOk: false };
+    const editBrownie = { title: '메뉴 수정', backText: '메뉴 상세로', backHref: '03-menu-detail.dc.html', curList: 'page', curNew: 'false',
+      name: '초콜릿 브라우니', nameCount: 8, price: '5,500', catNone: false, catKor: false, catBakery: true, ok: false, notOk: true };
+    const frames = [
+      { ...create, key: 'c1', label: '등록 · 데스크톱', tag: '라이트 · 1280px · 빈 입력', frameClass: 'frame--desktop', theme: 'light' },
+      { ...editBibim, key: 'e1', label: '수정 · 데스크톱', tag: '라이트 · 1280px · 기존 값 채움', frameClass: 'frame--desktop', theme: 'light' },
+      { ...create, key: 'c2', label: '등록 · 모바일', tag: '라이트 · 390px · 빈 입력', frameClass: 'frame--mobile', theme: 'light' },
+      { ...editBrownie, key: 'e2', label: '수정 · 모바일', tag: '다크 · 390px · 기존 값 채움', frameClass: 'frame--mobile', theme: 'dark' },
+    ];
+    return { frames };
+  }
+}
+</script>
+</body>
+</html>

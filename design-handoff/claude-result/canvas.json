@@ -1,0 +1,27 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-09-30T12:00:00Z" },
+  "title": "메뉴 관리 디자인",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1680, "h": 4500, "title": "0 · 디자인 시스템 (토큰)" },
+    "01-layout-components.dc.html": { "x": 1760, "y": 0, "w": 1880, "h": 4400, "title": "1 · 공통 레이아웃과 컴포넌트" },
+    "02-menu-list.dc.html": { "x": 0, "y": 4620, "w": 2348, "h": 2650, "title": "2 · 메뉴 목록" },
+    "03-menu-detail.dc.html": { "x": 2428, "y": 4620, "w": 2780, "h": 2300, "title": "3 · 메뉴 상세" },
+    "04-menu-form.dc.html": { "x": 0, "y": 7390, "w": 2780, "h": 2600, "title": "4 · 메뉴 등록·수정 폼" },
+    "05-states.dc.html": { "x": 2860, "y": 7390, "w": 3228, "h": 8200, "title": "5 · 상태 모음" },
+    "06-handoff-spec.dc.html": { "x": 0, "y": 10110, "w": 1680, "h": 11200, "title": "6 · 구현 명세 (핸드오프)" }
+  },
+  "order": [
+    "Main.dc.html",
+    "01-layout-components.dc.html",
+    "02-menu-list.dc.html",
+    "03-menu-detail.dc.html",
+    "04-menu-form.dc.html",
+    "05-states.dc.html",
+    "06-handoff-spec.dc.html"
+  ],
+  "notes": {},
+  "designSystems": []
+}

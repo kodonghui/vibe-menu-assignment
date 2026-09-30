@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>메뉴 상세</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./menu-ui.css">
+<link rel="stylesheet" href="./board.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div class="board" style="width: 2780px; height: 2300px">
+
+  <div class="boardHead">
+    <span class="label1 bold boardKicker">3 · 메뉴 상세</span>
+    <h1 class="title3 bold">이름 · 가격 · 분류 · 주문 상태 · 메뉴 번호, 그리고 수정과 삭제</h1>
+    <p class="body2-reading muted">/menus/:menuCode 화면입니다. 삭제는 항상 확인 다이얼로그를 거치고 메뉴 이름이 제목에 들어갑니다. 첫 포커스는 안전한 “취소”에 둡니다. 삭제가 성공하면 목록으로 이동합니다. 아래 데이터는 디자인 샘플입니다.</p>
+  </div>
+
+  <div class="frameGrid">
+    <sc-for list="{{frames}}" as="f" hint-placeholder-count="4">
+      <div class="frameItem">
+        <div class="frameLabel"><span class="label1 bold">{{f.label}}</span><span class="chip label2 medium">{{f.tag}}</span></div>
+        <div class="frame {{f.frameClass}}" data-theme="{{f.theme}}">
+
+          <header class="siteHeader">
+            <div class="headerInner">
+              <a class="brand" href="02-menu-list.dc.html">
+                <span class="brandMark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></span>
+                <span class="heading2 bold">메뉴 관리</span>
+              </a>
+              <nav class="nav" aria-label="주요 메뉴">
+                <a class="navLink body2 medium" href="02-menu-list.dc.html" aria-current="page">메뉴 목록</a>
+                <a class="navLink body2 medium" href="04-menu-form.dc.html">메뉴 등록</a>
+              </nav>
+            </div>
+          </header>
+
+          <main class="siteMain">
+            <div class="page page--narrow">
+
+              <div class="pageHeader pageHeader--bottom">
+                <div class="pageHeaderText">
+                  <a class="backLink label1 medium" href="02-menu-list.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>메뉴 목록으로</a>
+                  <h1 class="pageTitle title3 bold">메뉴 상세</h1>
+                </div>
+                <div class="pageActions pageActions--stack">
+                  <a class="btn btnSecondary label1 bold" href="04-menu-form.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/></svg>수정</a>
+                  <button type="button" class="btn btnDanger label1 bold"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>삭제</button>
+                </div>
+              </div>
+
+              <section class="panel" aria-label="메뉴 정보">
+                <dl class="specList">
+                  <div class="specItem specItem--wide">
+                    <dt class="specLabel label1 medium">메뉴 이름</dt>
+                    <dd class="specValue title3 bold">{{f.name}}</dd>
+                  </div>
+                  <div class="specItem">
+                    <dt class="specLabel label1 medium">가격</dt>
+                    <dd class="specValue heading2 bold">{{f.priceText}}</dd>
+                  </div>
+                  <div class="specItem">
+                    <dt class="specLabel label1 medium">분류</dt>
+                    <dd class="specValue body1 medium">{{f.cat}}</dd>
+                  </div>
+                  <div class="specItem">
+                    <dt class="specLabel label1 medium">주문 상태</dt>
+                    <dd class="specValue">
+                      <sc-if value="{{f.ok}}" hint-placeholder-val="{{ true }}">
+                        <span class="badge badgePositive label2 bold"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>주문 가능</span>
+                      </sc-if>
+                      <sc-if value="{{f.notOk}}" hint-placeholder-val="{{ false }}">
+                        <span class="badge badgeNegative label2 bold"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>주문 불가</span>
+                      </sc-if>
+                    </dd>
+                  </div>
+                  <div class="specItem">
+                    <dt class="specLabel label1 medium">메뉴 번호</dt>
+                    <dd class="specValue body1 medium">{{f.code}}</dd>
+                  </div>
+                </dl>
+              </section>
+
+            </div>
+          </main>
+
+          <footer class="siteFooter">
+            <span class="caption1">메뉴 관리</span>
+            <span class="caption1">Spring Boot REST API · React 연동 과제</span>
+          </footer>
+
+          <sc-if value="{{f.dialog}}" hint-placeholder-val="{{ false }}">
+            <div class="overlay">
+              <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dt-{{f.key}}" aria-describedby="dd-{{f.key}}">
+                <div class="dialogText">
+                  <h2 class="heading2 bold" id="dt-{{f.key}}">‘{{f.name}}’ 메뉴를 삭제할까요?</h2>
+                  <p class="body2-reading muted" id="dd-{{f.key}}">삭제하면 목록에서 사라지고 되돌릴 수 없습니다.</p>
+                  <p class="label2 muted">메뉴 번호 {{f.code}} · {{f.priceText}} · {{f.cat}}</p>
+                </div>
+                <div class="dialogActions">
+                  <button type="button" class="btn btnSecondary isFocus label1 bold">취소</button>
+                  <button type="button" class="btn btnDangerSolid label1 bold">삭제</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2780,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // 디자인 샘플 데이터 (실제 서버 응답이 아님)
+    const bibim = { name: '소고기 비빔밥', priceText: '11,000원', cat: '한식', code: 7, ok: true, notOk: false };
+    const brownie = { name: '초콜릿 브라우니', priceText: '5,500원', cat: '베이커리', code: 9, ok: false, notOk: true };
+    const frames = [
+      { ...bibim, key: 'd1', label: '데스크톱', tag: '라이트 · 1280px · 기본', frameClass: 'frame--desktop', theme: 'light', dialog: false },
+      { ...bibim, key: 'd2', label: '데스크톱', tag: '라이트 · 1280px · 삭제 확인', frameClass: 'frame--desktop', theme: 'light', dialog: true },
+      { ...bibim, key: 'm1', label: '모바일', tag: '라이트 · 390px · 기본', frameClass: 'frame--mobile', theme: 'light', dialog: false },
+      { ...brownie, key: 'm2', label: '모바일', tag: '다크 · 390px · 삭제 확인 (주문 불가 메뉴)', frameClass: 'frame--mobile', theme: 'dark', dialog: true },
+    ];
+    return { frames };
+  }
+}
+</script>
+</body>
+</html>

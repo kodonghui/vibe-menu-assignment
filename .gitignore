@@ -1,0 +1,17 @@
+.runtime/
+*.mv.db
+*.trace.db
+node_modules/
+.gradle/
+build/
+dist/
+.idea/
+.env
+.env.*
+!.env.example
+*.log
+frontend/public/vite.svg
+frontend/src/assets/
+# 학습용 Sites는 별도 소스 저장소이며 과제 앱 제출 범위에서 제외합니다.
+/design-site/
+/encyclopedia-site/

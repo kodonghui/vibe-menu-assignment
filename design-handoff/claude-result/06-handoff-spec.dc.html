@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구현 명세</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./menu-ui.css">
+<link rel="stylesheet" href="./board.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div class="board" style="width: 1680px; height: 11200px">
+
+  <div class="boardHead">
+    <span class="label1 bold boardKicker">6 · 구현 명세 (핸드오프)</span>
+    <h1 class="title3 bold">구현 담당자에게 넘기는 화면·컴포넌트·상태·토큰 규칙</h1>
+    <p class="body2-reading muted">아트보드 1~5의 값을 그대로 옮겨 적은 표입니다. 토큰·클래스·속성 이름은 회색 칩으로 표시했고, 토큰 이름은 모두 첨부한 tokens.css에 실제로 있는 것입니다. 이 시안에 나온 메뉴 이름·가격·개수는 디자인 샘플이며 서버 연동 결과가 아닙니다.</p>
+  </div>
+
+  <sc-for list="{{sections}}" as="sec" hint-placeholder-count="10">
+    <section class="section" aria-labelledby="sec-{{sec.no}}">
+      <div class="sectionHead">
+        <span class="stateNo label1 bold">{{sec.no}}</span>
+        <h2 class="heading1 bold" id="sec-{{sec.no}}">{{sec.title}}</h2>
+        <span class="label1 muted">{{sec.sub}}</span>
+      </div>
+
+      <sc-if value="{{sec.hasLead}}" hint-placeholder-val="{{ true }}">
+        <p class="body2-reading muted docNote">{{sec.lead}}</p>
+      </sc-if>
+
+      <sc-if value="{{sec.hasBullets}}" hint-placeholder-val="{{ true }}">
+        <ul class="list docNote">
+          <sc-for list="{{sec.bullets}}" as="b" hint-placeholder-count="5">
+            <li class="body2-reading">
+              <sc-for list="{{b.parts}}" as="p" hint-placeholder-count="3">
+                <sc-if value="{{p.isTok}}" hint-placeholder-val="{{ false }}"><span class="tok caption1">{{p.txt}}</span></sc-if>
+                <sc-if value="{{p.isText}}" hint-placeholder-val="{{ true }}"><span>{{p.txt}}</span></sc-if>
+              </sc-for>
+            </li>
+          </sc-for>
+        </ul>
+      </sc-if>
+
+      <sc-for list="{{sec.tables}}" as="t" hint-placeholder-count="2">
+        <div class="section" style="gap: var(--space-8)">
+          <sc-if value="{{t.hasTitle}}" hint-placeholder-val="{{ true }}">
+            <div class="docTitle"><h3 class="heading2 bold">{{t.title}}</h3><span class="label1 muted">{{t.sub}}</span></div>
+          </sc-if>
+          <div class="docTable" role="table" aria-label="{{t.title}}">
+            <div class="docRow docRow--head" role="row" style="grid-template-columns: {{t.cols}}">
+              <sc-for list="{{t.head}}" as="h" hint-placeholder-count="4">
+                <div class="docCell label2 bold" role="columnheader">{{h}}</div>
+              </sc-for>
+            </div>
+            <sc-for list="{{t.rows}}" as="r" hint-placeholder-count="6">
+              <div class="docRow" role="row" style="grid-template-columns: {{t.cols}}">
+                <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="4">
+                  <div class="docCell label2 {{c.cls}}" role="cell">
+                    <sc-for list="{{c.lines}}" as="ln" hint-placeholder-count="2">
+                      <p>
+                        <sc-for list="{{ln.parts}}" as="p" hint-placeholder-count="3">
+                          <sc-if value="{{p.isTok}}" hint-placeholder-val="{{ false }}"><span class="tok caption1">{{p.txt}}</span></sc-if>
+                          <sc-if value="{{p.isText}}" hint-placeholder-val="{{ true }}"><span>{{p.txt}}</span></sc-if>
+                        </sc-for>
+                      </p>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+  </sc-for>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":11200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // [토큰] 표기를 칩과 글자 조각으로 나눈다.
+    // 안쪽에 [ ] 한 겹이 있는 표기(예: [[data-theme="dark"]])도 한 칩으로 묶는다.
+    const TOK = /(\[(?:[^\[\]]|\[[^\]]*\])+\])/;
+    const parts = s => s.split(TOK).filter(x => x !== '').map(x =>
+      TOK.test(x) && x[0] === '[' && x[x.length - 1] === ']' ? { isTok: true, isText: false, txt: x.slice(1, -1) } : { isTok: false, isText: true, txt: x });
+    const cell = (s, key) => ({ cls: key ? 'docCell--key' : '', lines: s.split('\n').map(l => ({ parts: parts(l) })) });
+    const table = (title, sub, cols, head, rows) => ({ title, sub, hasTitle: !!title, cols, head,
+      rows: rows.map(r => ({ cells: r.map((s, i) => cell(s, i === 0)) })) });
+    const bullets = arr => arr.map(s => ({ parts: parts(s) }));
+    const sec = (no, title, sub, o) => ({ no, title, sub, lead: o.lead || '', hasLead: !!o.lead,
+      bullets: bullets(o.bullets || []), hasBullets: !!(o.bullets && o.bullets.length), tables: o.tables || [] });
+
+    const sections = [
+
+      sec('1', '구현 원칙', '먼저 읽는 규칙', { bullets: [
+        '실제 앱은 React JS/JSX + CSS Module입니다. UI 라이브러리와 CSS 프레임워크는 쓰지 않습니다. 이 시안의 [menu-ui.css]는 클래스 이름을 카멜케이스로 지어 CSS Module 파일로 나눠 옮기기 쉽게 했습니다.',
+        'tokens.css는 앱 진입점에서 한 번만 불러오고, 컴포넌트 CSS에는 [var(--…)]만 씁니다. 색·글자 크기·행간·자간·간격·모서리·그림자에 새 값을 만들지 않았습니다. 레이아웃 크기(카드 열 수, 화면 최대 폭 1040px·720px, 빈 상태 설명 폭 440px, 다이얼로그 최대 폭 440px)만 토큰이 없는 값입니다.',
+        '글자 크기는 CSS에 쓰지 않고 요소에 tokens.css의 전역 타입 클래스를 붙입니다. CSS Module 클래스와 함께 [className={`${styles.menuName} headline1 bold`}]처럼 문자열로 이어 붙이면 됩니다.',
+        '다크 테마는 최상위 요소에 [data-theme="dark"]만 붙이면 tokens.css가 semantic 토큰 값을 바꿉니다. 그래서 컴포넌트 CSS는 테마별로 나누지 않고, 대비 때문에 예외가 필요한 세 곳(주요 버튼·현재 페이지·위험 채움 버튼)만 [[data-theme="dark"]] 규칙을 따로 둡니다.',
+        '반응형 기준은 하나입니다. 768px 미만이 모바일입니다([breakpoint.sm = 768px]). 시안은 화면 프레임 폭을 재는 [@container]로 그렸고, 실제 앱은 같은 값의 [@media (max-width: 767px)]로 바꾸면 됩니다. 카드 열 수만 [breakpoint.md = 992px]에서 3열→2열이 한 번 더 바뀝니다([max-width: 991px]).',
+        '상태는 색만으로 구분하지 않습니다. 주문 가능/불가 배지는 글자 + 아이콘 모양 + 색을, 오류는 글자 + 아이콘 + 테두리를, 현재 페이지는 배경 + [aria-current="page"]를 함께 씁니다.',
+        '디자인 밖 기능은 넣지 않았습니다: 사진·별점·재고·매출·주문 내역, 로그인·장바구니·결제. 가격 필터는 “입력 가격 초과”입니다(최소/이하 아님).',
+      ] }),
+
+      sec('2', '화면과 이동', '경로 · 아트보드 · 성공 후 이동', { tables: [
+        table('', '', '170px 300px 1fr 1fr', ['화면', 'React 경로', '보이는 아트보드', '이동 규칙'], [
+          ['메뉴 목록', '[/?page=1&q=&category=&price=]', '2번 · 5번(1~4)', '카드 → 상세. “메뉴 등록” → [/menus/new]. 검색·카테고리·가격·쪽 번호는 URL에 두어 새로고침·뒤로가기에서 유지'],
+          ['메뉴 상세', '[/menus/:menuCode]', '3번 · 5번(5, 9~12)', '“수정” → [/menus/:menuCode/edit]. 삭제 성공 → 목록. 뒤로 링크 → 목록'],
+          ['메뉴 등록', '[/menus/new]', '4번(등록) · 5번(6~8)', '저장 성공 → 새 메뉴의 상세(등록 성공 알림). 취소 → 목록'],
+          ['메뉴 수정', '[/menus/:menuCode/edit]', '4번(수정) · 5번(6~8)', '저장 성공 → 상세(저장 성공 알림). 취소 → 상세'],
+        ]),
+      ] }),
+
+      sec('3', '데이터와 API 연결', '화면 요소 ↔ 필드', { lead: '아래는 api-docs.json에 있는 엔드포인트와 필드만 씁니다. 새 API를 가정하지 않았습니다. 화면에 표시하는 값은 [menuName] [menuPrice] [categoryName] [orderableStatus] [menuCode] 다섯 개뿐입니다.', tables: [
+        table('필드 표시 규칙', '', '210px 1fr 1fr', ['필드', '화면에서 보이는 모습', '구현 메모'], [
+          ['menuName', '카드: [.headline1.bold], 2줄까지 보이고 넘치면 말줄임. 상세: [.title3.bold], 전부 줄바꿈해서 표시', '입력은 필수, 100자 이내. 글자 수 카운터 “7 / 100”'],
+          ['menuPrice', '카드: [.heading2.bold]. 상세: [.heading2.bold]. 예: 11,000원', '천 단위 쉼표 + “원”. 입력창은 숫자만, 접미사 “원”. 0 이상의 정수'],
+          ['categoryName', '칩 [.chip] + [.label2.medium] (카드), 상세 “분류”', '하위 카테고리 이름(한식·커피·베이커리 …). 폼에서는 상위 구분(식사·음료·디저트)별 [optgroup]으로 묶어 선택'],
+          ['orderableStatus', '“Y” → 주문 가능(긍정 배지 + 체크 아이콘). “N” → 주문 불가(부정 배지 + 금지 아이콘)', 'Y/N ↔ 문구 변환은 한 곳에서. 폼은 라디오 두 개, 등록 기본값 “주문 가능”'],
+          ['menuCode', '카드 아래쪽 “메뉴 번호 7”, 상세 “메뉴 번호”', '경로 매개변수와 같은 값. 사용자가 입력하지 않음'],
+        ]),
+        table('요청과 응답', '', '250px 1fr 1fr', ['동작', '엔드포인트 (api-docs.json)', '결과 → 화면'], [
+          ['목록·검색·쪽 이동', '[GET /api/menus] 또는 [GET /api/menus/pages]. 가격 초과는 [GET /api/menus/search?menuPrice=]', '이름·카테고리는 React에서 거름. 결과 없음 → 5-2, 0개 → 5-3, 실패 → 5-4'],
+          ['카테고리 목록', '[GET /api/categories]', '목록 필터·폼 선택창의 옵션'],
+          ['상세', '[GET /api/menus/{menuCode}]', '404 (ERROR_CODE_00001) → 5-5'],
+          ['등록', '[POST /api/menus] → 201 / 400', '성공 → 상세. 400 → 폼 위 저장 실패 알림(5-8)'],
+          ['수정', '[PUT /api/menus/{menuCode}] → 200 / 404', '성공 → 상세. 404 → 5-5'],
+          ['삭제', '[DELETE /api/menus/{menuCode}]. HTTP 200 안의 본문 httpStatus가 204', '성공 → 목록. 실패 → 5-12. 본문의 httpStatus도 확인'],
+        ]),
+      ], bullets: [
+        '결정이 필요한 점 — 이름·카테고리 검색을 React에서 하려면 조건에 맞는 메뉴 전체가 브라우저에 있어야 합니다. 이 시안은 “필터 결과 전체를 다시 쪽으로 나눈다”(예: 커피 · 4,000원 초과 → 3개, 쪽 이동 없음)를 그렸습니다. [GET /api/menus/pages]의 서버 쪽 번호를 그대로 쓰면 필터가 현재 쪽 안에서만 동작하므로, 구현 전에 어느 쪽으로 할지 정해야 합니다.',
+        '쪽 번호는 API에서 1부터 시작합니다. URL과 화면 표기(“2 / 4 페이지”)도 1부터 맞춥니다.',
+      ] }),
+
+      sec('4', '화면별 레이아웃', '데스크톱 ↔ 모바일에서 바뀌는 것과 고정되는 것', { tables: [
+        table('공통 셸', '', '190px 1fr 1fr 1fr', ['영역', '데스크톱 (768px 이상)', '모바일 (767px 이하)', '항상 같은 규칙'], [
+          ['헤더', '한 줄. 브랜드 왼쪽, 내비 이어서. 가로 [--space-32], 내비 높이 [--space-64]', '두 줄. 브랜드 줄 아래에 내비 두 칸 균등, 내비 높이 [--space-48], 브랜드 가로 [--space-16]', '배경 [--background-normal-normal], 아래선 [--line-solid-neutral], 현재 항목 [aria-current="page"]'],
+          ['본문 여백', '위 [--space-40] 좌우 [--space-32] 아래 [--space-64], 블록 간격 [--space-24]', '위 [--space-24] 좌우 [--space-16] 아래 [--space-40], 블록 간격 [--space-20]', '본문은 가운데, 목록 최대 폭 1040px, 상세·폼 720px'],
+          ['푸터', '한 줄 양끝 정렬, 세로 [--space-24] 가로 [--space-32]', '두 줄 세로 쌓음, 세로 [--space-24] 가로 [--space-16]', '글자 [.caption1] [--label-neutral]'],
+        ]),
+        table('메뉴 목록', '아트보드 2', '190px 1fr 1fr 1fr', ['영역', '데스크톱', '모바일', '고정'], [
+          ['제목 줄', '제목 왼쪽, “메뉴 등록” 주요 버튼 오른쪽', '같은 줄 유지. 공간이 모자라면 버튼이 아래로 줄바꿈', '제목 [.title3.bold] [--label-strong]. 등록 버튼은 항상 보임'],
+          ['필터 패널', '한 줄 3칸: 이름 검색 2fr · 하위 카테고리 1.2fr · 가격 1.2fr, 간격 [--space-16], 안쪽 [--space-20]', '두 줄 2칸: 이름 검색이 전체 폭, 아래 카테고리·가격, 간격 [--space-12], 안쪽 [--space-16]', '라벨은 항상 보임([.label1.bold]), 입력 높이 [--space-48], 가격 접미사 “원 초과”, [role="search"]'],
+          ['결과 줄', '왼쪽 개수 · 오른쪽 “2 / 4 페이지”', '같은 구성, 줄바꿈 허용', '[aria-live="polite"]. 필터 중에는 “조건에 맞는 메뉴 N개 · 전체 M개 중 · 필터 초기화”'],
+          ['카드 그리드', '992px 이상 3열, 768~991px 2열, 간격 [--space-16]', '1열, 간격 [--space-12]', '카드 안쪽 [--space-20], 카드 사이 규칙 동일. 카드 전체가 상세로 가는 링크'],
+          ['페이지 이동', '이전 · 1 · 2 · 3 · 4 · 다음 (각 [--space-48] 정사각)', '이전 · “2 / 4 페이지” · 다음 (같은 크기)', '터치 목표 [--space-48] 이상. 현재 쪽 [aria-current="page"]. 필터로 한 쪽 이하이면 숨김'],
+        ]),
+        table('메뉴 상세', '아트보드 3', '190px 1fr 1fr 1fr', ['영역', '데스크톱', '모바일', '고정'], [
+          ['제목 줄', '뒤로 링크 + 제목 왼쪽, “수정”·“삭제” 오른쪽 아래 정렬', '제목 아래에 수정·삭제 두 칸 균등, 폭 100%', '삭제는 위험 아웃라인 버튼, 수정은 보조 버튼. 삭제만 확인 창을 거침'],
+          ['정보 패널', '2열: 이름 전체 폭, 가격·분류, 주문 상태·메뉴 번호. 항목 위 구분선 [--line-solid-neutral]', '1열: 라벨 왼쪽 · 값 오른쪽 한 줄, 이름만 라벨 위·값 아래', '[dl/dt/dd] 구조. 주문 상태는 배지(글자 + 아이콘)'],
+          ['삭제 확인 창', '패널 위 가운데, 최대 폭 440px', '가로 [--space-16] 여백을 두고 폭 가득', '제목에 메뉴 이름. 첫 포커스 “취소”. Esc로 닫힘. [role="alertdialog"] [aria-modal="true"]'],
+        ]),
+        table('메뉴 등록·수정 폼', '아트보드 4', '190px 1fr 1fr 1fr', ['영역', '데스크톱', '모바일', '고정'], [
+          ['필드 배치', '세로 한 줄씩. 이름 → 가격 → 하위 카테고리 → 주문 상태', '같음', '필드 간격 [--space-20]. 등록 = 빈 값(주문 상태만 “주문 가능”), 수정 = 기존 값'],
+          ['주문 상태', '라디오 카드 두 칸 균등', '같음', '카드 높이 [--space-48]. 선택 시 테두리 [--primary-normal]'],
+          ['버튼 줄', '오른쪽 정렬: 취소 → 저장 (자동 폭)', '두 칸 균등 폭', '저장은 주요 버튼. 취소는 등록이면 목록, 수정이면 상세'],
+        ]),
+      ] }),
+
+      sec('5', '컴포넌트별 토큰', '색 · 타입 · 간격 · 모서리 · 그림자의 정확한 이름', { lead: '색은 모두 semantic 토큰이고, 글자 크기는 타입 클래스입니다. 표의 “간격”은 [padding]·[gap]·[min-height] 등에 쓴 [--space-*] 입니다.', tables: [
+        table('', '', '170px 1.25fr 1fr 1fr 0.8fr', ['컴포넌트', '색', '타입', '간격 · 크기', '모서리 · 그림자'], [
+          ['헤더 · 내비\n[.siteHeader] [.navLink]', '배경 [--background-normal-normal]\n아래선 [--line-solid-neutral]\n링크 [--label-neutral] → hover [--label-strong] → 현재 [--primary-normal]\n브랜드 [--label-strong], 로고 칩 [--primary-normal] + [--static-white]', '브랜드 [.heading2.bold]\n내비 [.body2.medium]', '내비 높이 [--space-64] (모바일 [--space-48])\n링크 가로 [--space-16]\n현재 밑줄 두께 [--space-2]\n로고 [--space-32]', '로고 [--radius-8]\n밑줄 [--radius-999]'],
+          ['푸터\n[.siteFooter]', '배경 [--background-normal-normal]\n위선 [--line-solid-neutral]\n글자 [--label-neutral]', '[.caption1]', '세로 [--space-24]\n가로 [--space-32] (모바일 [--space-16])', '—'],
+          ['화면 제목 · 뒤로 링크\n[.pageTitle] [.backLink]', '제목 [--label-strong]\n링크 [--label-neutral] → hover [--label-strong] + 밑줄', '제목 [.title3.bold]\n링크 [.label1.medium]', '링크 높이 [--space-48]\n제목-링크 [--space-2]\n제목 줄 간격 [--space-12] [--space-16]', '링크 [--radius-6]'],
+          ['버튼 공통\n[.btn]', '(아래 변형별)', '[.label1.bold]', '높이 [--space-48]\n가로 [--space-20]\n아이콘 간격 [--space-8]\n테두리 [--space-1]', '[--radius-10]'],
+          ['주요 버튼\n[.btnPrimary]', '배경 [--primary-normal] 글자 [--static-white]\nhover 배경 [--primary-strong]\n다크: 배경 [--primary-heavy], hover는 링 [--line-primary-strong]', '[.label1.bold]', '—', '—'],
+          ['보조 버튼\n[.btnSecondary]', '배경 [--background-normal-normal] 글자 [--label-normal]\n테두리 [--line-solid-normal]\nhover 배경 [--background-normal-alternative], 테두리 [--interaction-inactive]', '[.label1.bold]', '—', '—'],
+          ['위험 버튼(삭제 진입)\n[.btnDanger]', '배경 [--background-normal-normal] 글자 [--accent-foreground-red]\n테두리 [--line-status-negative-strong]\nhover 배경 [--background-status-negative]', '[.label1.bold]', '—', '—'],
+          ['위험 채움 버튼(확인 창)\n[.btnDangerSolid]', '배경 [--accent-foreground-red] 글자 [--static-white]\n다크: 배경 [--status-negative] 글자 [--static-black]\nhover 링 [--line-status-negative-strong]', '[.label1.bold]', 'hover 링 두께 [--space-2]', '—'],
+          ['비활성 · 처리 중\n[:disabled] [aria-busy]', '비활성: 배경 [--interaction-disable] 글자 [--label-disable]\n처리 중: 배경 [--fill-strong] 글자 [--label-neutral], 회전 아이콘 [--primary-normal]', '[.label1.bold]', '—', '—'],
+          ['텍스트 · 아이콘 버튼\n[.btnText] [.btnIcon]', '텍스트 글자 [--primary-normal], hover 밑줄\n아이콘 글자 [--label-neutral], hover 배경 [--fill-normal] 글자 [--label-strong]', '텍스트 [.label1.bold]', '높이 [--space-48]\n아이콘 버튼 [--space-48] 정사각\n텍스트 가로 [--space-8]', '텍스트 [--radius-6]\n아이콘 [--radius-10]'],
+          ['포커스 링 (모든 조작 요소)', '[outline: --space-2 solid --primary-normal]', '—', '바깥 간격 [--space-2] ([outline-offset])', '—'],
+          ['입력창 · 선택창\n[.input] [.select]', '배경 [--background-normal-normal] 글자 [--label-normal]\n테두리 [--label-alternative], 안내 글자 [--label-alternative]\nhover 테두리 [--label-neutral], 포커스 [--primary-normal]\n오류 테두리 [--status-negative] + 바깥 [--space-1]\n비활성 배경 [--interaction-disable] 테두리 [--line-solid-normal] 글자 [--label-neutral]', '[.body1]', '높이 [--space-48]\n가로 [--space-16]\n오른쪽 접미사 자리 [--space-48] / “원 초과” [--space-72]\n검색 아이콘 자리 왼쪽 [--space-48]', '[--radius-12]'],
+          ['필드 라벨 · 도움말 · 오류\n[.field]', '라벨 [--label-normal], “필수” [--primary-normal]\n도움말·카운터 [--label-neutral]\n오류 글자 [--accent-foreground-red] + 아이콘', '라벨 [.label1.bold]\n필수 [.label2.medium]\n도움말 [.label2]\n카운터 [.caption1]\n오류 [.label2.medium]', '라벨-입력 [--space-8]\n라벨 안 [--space-6]\n오류 아이콘 간격 [--space-6]', '—'],
+          ['라디오 선택 카드\n[.choiceBox] [.radioMark]', '배경 [--background-normal-normal]\n테두리·표식 [--label-alternative]\n선택: 테두리·점 [--primary-normal] + 바깥 [--space-1]\n비활성 [--interaction-disable]', '[.body1]', '높이 [--space-48]\n가로 [--space-16], 표식 간격 [--space-12]\n표식 [--space-20], 안쪽 점 [--space-10]', '카드 [--radius-12]\n표식 [--radius-50pct]'],
+          ['주문 상태 배지\n[.badge]', '가능: 배경 [--background-status-positive] 테두리 [--line-status-positive-normal] 아이콘 [--accent-foreground-green]\n불가: 배경 [--background-status-negative] 테두리 [--line-status-negative-normal] 아이콘 [--accent-foreground-red]\n글자 [--label-normal]', '[.label2.bold]', '세로 [--space-4]\n가로 [--space-8] / [--space-10]\n글자-아이콘 [--space-4]', '[--radius-999]'],
+          ['카테고리 칩\n[.chip]', '배경 [--fill-normal] 글자 [--label-neutral]', '[.label2.medium]', '세로 [--space-2] 가로 [--space-8]', '[--radius-6]'],
+          ['패널\n[.panel]', '배경 [--background-elevated-normal]\n테두리 [--line-solid-neutral]', '—', '안쪽 [--space-24] (모바일 [--space-20])\n테두리 [--space-1]', '[--radius-12]'],
+          ['필터 패널 · 결과 줄\n[.filterPanel] [.resultBar]', '패널은 위와 같음\n개수 숫자 [--label-strong]', '결과 [.label1]', '패널 안쪽 [--space-20] (모바일 [--space-16])\n칸 간격 [--space-16] (모바일 [--space-12])\n결과 줄 높이 [--space-48]', '[--radius-12]'],
+          ['메뉴 카드\n[.menuCard]', '배경 [--background-elevated-normal]\n테두리 [--line-solid-neutral]\nhover 테두리 [--line-primary-strong]\n이름·가격 [--label-strong]\n하단 선 [--line-solid-alternative], 하단 글자 [--label-neutral]', '이름 [.headline1.bold]\n가격 [.heading2.bold]\n하단 [.caption1]', '안쪽 [--space-20]\n블록 간격 [--space-12]\n카드 사이 [--space-16] (모바일 [--space-12])', '[--radius-12]\nhover [--shadow-normal-small]'],
+          ['스켈레톤\n[.skeleton]', '[--fill-strong] 깜빡임 [--opacity-52]', '—', '줄 높이 [--space-24] / [--space-16], 너비 [--space-56] ~ [--space-80]', '[--radius-6]'],
+          ['페이지 이동\n[.pageBtn]', '글자 [--label-neutral], hover 배경 [--fill-normal]\n현재 배경 [--primary-normal] 글자 [--static-white] (다크 [--primary-heavy])\n비활성 글자 [--label-disable]', '숫자 [.label1.medium], 현재 [.label1.bold]\n요약 [.label1.medium]', '버튼 [--space-48] 이상\n버튼 사이 [--space-4]\n요약 폭 [--space-80]', '[--radius-8]'],
+          ['상세 정보 목록\n[.specList]', '라벨 [--label-neutral]\n값 [--label-strong]\n구분선 [--line-solid-neutral]', '라벨 [.label1.medium]\n이름 [.title3.bold]\n가격 [.heading2.bold]\n나머지 [.body1.medium]', '항목 세로 [--space-20]\n열 간격 [--space-32]\n라벨-값 [--space-6]', '—'],
+          ['알림\n[.alert]', '성공: 배경 [--background-status-positive] 테두리 [--line-status-positive-normal] 아이콘 [--accent-foreground-green]\n실패: 배경 [--background-status-negative] 테두리 [--line-status-negative-normal] 아이콘 [--accent-foreground-red]\n글자는 항상 [--label-normal]', '제목 [.body2.bold]\n본문 [.body2]', '안쪽 [--space-16]\n아이콘-글 [--space-12]\n제목-본문 [--space-2]', '[--radius-12]'],
+          ['빈 상태\n[.emptyState]', '배경 [--background-elevated-normal]\n점선 [--line-solid-normal]\n아이콘 원 [--fill-normal] + [--label-neutral] (오류: [--background-status-negative] + [--accent-foreground-red])\n제목 [--label-strong], 설명 [--label-neutral]', '제목 [.headline1.bold]\n설명 [.body2]', '안쪽 [--space-64] [--space-24] (모바일 [--space-40] [--space-16])\n아이콘 원 [--space-56]\n요소 간격 [--space-8], 버튼 위 [--space-16]', '[--radius-12]\n원 [--radius-50pct]'],
+          ['확인 다이얼로그\n[.overlay] [.dialog]', '뒷배경 [--material-dimmer]\n카드 배경 [--background-elevated-normal] 글자 [--label-normal]', '제목 [.heading2.bold]\n본문 [.body2-reading]\n보조 [.label2]', '안쪽 [--space-24]\n블록 간격 [--space-16]\n버튼 두 칸 균등, 간격 [--space-8]\n층 [--z-modal]', '[--radius-20]\n[--shadow-normal-xlarge]'],
+          ['프레임(시안 전용)\n[.frame]', '배경 [--background-normal-alternative]\n테두리 [--line-solid-normal]', '—', '—', '[--radius-16]\n[--shadow-normal-medium]'],
+        ]),
+      ] }),
+
+      sec('6', '상태와 문구', '아트보드 5의 12가지 상태', { tables: [
+        table('', '', '60px 200px 1.2fr 1.4fr 1fr', ['번호', '상태', '언제 · 어떻게 보이나', '문구 (그대로 사용)', '접근성'], [
+          ['5-1', '목록 로딩', '결과 줄에 회전 아이콘, 카드 자리에 같은 모양의 스켈레톤', '“메뉴 목록을 불러오는 중입니다…”', '[role="status"], 목록 [aria-busy="true"], 스켈레톤 [aria-hidden]'],
+          ['5-2', '검색 결과 없음', '서버에는 메뉴가 있지만 조건에 맞는 것이 0개. 결과 줄과 빈 상태에 “필터 초기화”', '제목 “조건에 맞는 메뉴가 없습니다”\n본문 “이름 ‘라떼’ · 커피 · 6,000원 초과 조건으로 찾은 메뉴가 없어요. 검색어를 줄이거나 조건을 바꿔 보세요.”', '결과 줄 [aria-live="polite"]'],
+          ['5-3', '등록된 메뉴 없음', '서버 전체가 0개. 필터와 제목 줄 등록 버튼을 숨기고 빈 상태의 “메뉴 등록”만 남김', '제목 “등록된 메뉴가 없습니다”\n본문 “첫 메뉴를 등록하면 이곳에 카드로 표시됩니다.”', '—'],
+          ['5-4', '서버 연결 오류', '응답 없음·시간 초과. 같은 조건으로 다시 요청하는 “다시 시도”', '제목 “서버에 연결할 수 없습니다”\n본문 “메뉴 서버에서 응답이 없습니다. 네트워크 연결과 서버 상태를 확인한 뒤 다시 시도해 주세요.”', '[role="alert"]'],
+          ['5-5', '상세 404', '없거나 삭제된 메뉴 번호. 오류 코드는 노출하지 않음', '제목 “메뉴를 찾을 수 없습니다”\n본문 “메뉴 번호 999에 해당하는 메뉴가 없거나 이미 삭제되었습니다. 목록에서 다시 찾아 주세요.”\n버튼 “메뉴 목록으로”', '[role="alert"]'],
+          ['5-6', '필드별 입력 오류', '저장 누른 뒤 검증 실패. 오류 필드는 테두리 + 아이콘 + 문장', '이름 “메뉴 이름을 입력해 주세요.”\n가격 “가격은 0 이상의 정수로 입력해 주세요.”\n카테고리 “하위 카테고리를 선택해 주세요.”', '[aria-invalid="true"] + [aria-describedby], 각 오류 [role="alert"], 포커스는 첫 오류 필드로'],
+          ['5-7', '저장 중', '입력·선택·취소를 잠그고 저장 버튼이 회전 아이콘으로 바뀜(중복 제출 방지)', '버튼 “저장 중…”', '[aria-busy="true"], 숨김 안내 “메뉴를 저장하는 중입니다”'],
+          ['5-8', '저장 실패', '폼 위에 실패 알림, 입력값 유지, 버튼이 “다시 저장”', '제목 “저장하지 못했습니다”\n본문 “서버에서 응답이 없어 변경 내용이 저장되지 않았습니다. 입력한 내용은 그대로 남아 있으니 다시 저장해 주세요.”', '[role="alert"]'],
+          ['5-9', '저장 성공', '상세로 이동해 위에 성공 알림. 닫기 가능', '제목 “메뉴를 저장했습니다”\n본문 “‘소고기 비빔밥’ 메뉴의 변경 내용이 반영되었습니다.”\n(등록이면 “메뉴를 등록했습니다”)', '[role="status"], 닫기 [aria-label="알림 닫기"]'],
+          ['5-10', '삭제 확인', '삭제를 누르면 메뉴 이름이 든 확인 창. 첫 포커스는 “취소”', '제목 “‘소고기 비빔밥’ 메뉴를 삭제할까요?”\n본문 “삭제하면 목록에서 사라지고 되돌릴 수 없습니다.”\n버튼 “취소” “삭제”', '[role="alertdialog"], 포커스 가둠, Esc 닫기'],
+          ['5-11', '삭제 중', '취소·삭제 모두 잠그고 삭제 버튼이 회전 아이콘으로 바뀜', '버튼 “삭제 중…”', '[aria-busy="true"], 숨김 안내 “메뉴를 삭제하는 중입니다”'],
+          ['5-12', '삭제 실패', '창을 닫지 않고 안에 실패 알림. 메뉴는 그대로', '제목 “삭제하지 못했습니다”\n본문 “서버에서 응답이 없습니다. 잠시 후 다시 시도해 주세요.”\n버튼 “취소” “다시 삭제”', '[role="alert"], 포커스 “다시 삭제”'],
+        ]),
+      ], bullets: [
+        '문구는 디자인 초안입니다. 서버 오류 메시지(ERROR_CODE_00001·00002·00003·99999)는 그대로 노출하지 않고 위 문구로 바꿔 보여 주는 것을 전제로 했습니다.',
+      ] }),
+
+      sec('7', '접근성 · 대비 결정', '구현하면서 바꾸지 말아야 할 것', { tables: [
+        table('', '', '260px 1.4fr 1fr', ['항목', '결정', '이유'], [
+          ['입력·선택·라디오 테두리', '[--label-alternative]', '[--line-solid-normal]은 흰 배경에서 약 1.3:1이라 입력 경계로 보이지 않음. 이 토큰은 약 3.6~3.9:1'],
+          ['본문 글자', '[--label-alternative]는 안내 글자·비활성 표식에만 사용', '본문 대비 기준(4.5:1)에 못 미침'],
+          ['다크 주요 버튼·현재 쪽', '[--primary-heavy] + [--static-white]', '다크에서 [--primary-normal] 위 흰 글자는 약 3.5:1, heavy는 약 4.8:1'],
+          ['다크 위험 채움 버튼', '[--status-negative] + [--static-black]', '흰 글자보다 대비가 높음(약 7.2:1). 라이트는 [--accent-foreground-red] + [--static-white] 약 4.6:1'],
+          ['알림 글자', '항상 [--label-normal], 색은 아이콘·테두리·배경에만', '색 배경 위에서도 글자 대비를 확보'],
+          ['오류 글자', '[--accent-foreground-red]는 흰 패널 위에서만', '약 4.6:1. 색 배경 위에서는 쓰지 않음'],
+          ['키보드 포커스', '모든 링크·버튼·입력·카드에 같은 링, [outline-offset: --space-2]', '카드 전체 링크도 포커스가 보여야 함. 입력은 테두리 색까지 함께 바뀜'],
+          ['터치 목표', '높이·너비 [--space-48] 이상', '모바일 조작 오류 방지'],
+          ['움직임 줄이기', '[prefers-reduced-motion: reduce]에서 회전·깜빡임 멈춤', '아이콘만 남고 “불러오는 중…” 글자로 상태 전달'],
+        ]),
+      ] }),
+
+      sec('8', '예외와 가정', '토큰에 없어서 판단한 부분', { bullets: [
+        '글꼴: tokens.css에는 [font-family]가 없습니다. 시안은 Pretendard → Noto Sans KR 순서로 두었고 Noto Sans KR은 Google Fonts에서 불러옵니다. 실제 앱에서 쓸 글꼴 파일이 정해지면 전역 [body]의 [font-family] 한 곳만 바꾸면 됩니다.',
+        '토큰에 없는 레이아웃 수치: 화면 최대 폭 1040px·720px, 카드 열 수, 다이얼로그 최대 폭 440px, 빈 상태 설명 폭 440px. 색·간격·모서리·그림자 값은 만들지 않았습니다.',
+        '다크 주요 버튼 hover는 색 대신 링([--line-primary-strong])으로 표시합니다. [--primary-heavy]보다 더 진한 hover 색이 없기 때문입니다.',
+        '아이콘은 24px 격자의 선 아이콘(인라인 SVG)입니다. 앱에서는 아이콘 라이브러리 없이 같은 모양을 JSX 컴포넌트로 옮기세요.',
+        '이 문서와 아트보드의 모든 메뉴 이름·가격·개수(예: 전체 23개, 2/4쪽)는 디자인 샘플입니다. 서버 연동 완료를 뜻하지 않으며, 실제 연동은 구현 단계에서 다시 확인해야 합니다.',
+        '시안 HTML은 [.dc.html] 형식이라 그대로 앱에 넣지 않습니다. 편집 가능한 원본은 [menu-ui.css](컴포넌트) · [board.css](시안 전용) · tokens.css(변경 없음)이고, 앱에는 [menu-ui.css]만 나눠 가져가면 됩니다.',
+      ] }),
+
+      sec('9', 'CSS Module 대응표', '시안 클래스 → 앱 파일', { tables: [
+        table('', '', '240px 1fr 1fr', ['CSS Module 파일 (제안)', '시안 클래스', '쓰는 화면'], [
+          ['Layout.module.css', '[.siteHeader] [.headerInner] [.brand] [.nav] [.navLink] [.siteMain] [.page] [.pageHeader] [.pageTitle] [.pageActions] [.backLink] [.siteFooter]', '전체'],
+          ['Button.module.css', '[.btn] [.btnPrimary] [.btnSecondary] [.btnDanger] [.btnDangerSolid] [.btnText] [.btnIcon]', '전체'],
+          ['Field.module.css', '[.field] [.fieldLabel] [.control] [.input] [.select] [.suffix] [.fieldMeta] [.fieldError] [.choiceGroup] [.choice] [.choiceBox] [.radioMark]', '목록 필터, 등록·수정 폼'],
+          ['Badge.module.css', '[.badge] [.badgePositive] [.badgeNegative] [.chip]', '목록, 상세'],
+          ['MenuCard.module.css', '[.menuGrid] [.menuCard] [.menuCardTop] [.menuName] [.menuPrice] [.menuCardFoot] [.skeleton]', '목록'],
+          ['Pagination.module.css', '[.pagination] [.paginationCompact] [.pageBtn] [.pageGap] [.pageSummary]', '목록'],
+          ['Feedback.module.css', '[.alert] [.alertBody] [.alertClose] [.emptyState] [.emptyIcon] [.emptyText] [.emptyTitle]', '목록, 상세, 폼'],
+          ['ConfirmDialog.module.css', '[.overlay] [.dialog] [.dialogText] [.dialogActions]', '상세'],
+          ['MenuForm.module.css · MenuDetail.module.css', '[.formCard] [.formActions] / [.specList] [.specItem] [.specLabel] [.specValue]', '폼 / 상세'],
+        ]),
+      ] }),
+
+    ];
+    return { sections };
+  }
+}
+</script>
+</body>
+</html>

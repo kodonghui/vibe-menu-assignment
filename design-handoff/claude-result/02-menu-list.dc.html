@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>메뉴 목록</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./menu-ui.css">
+<link rel="stylesheet" href="./board.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div class="board" style="width: 2348px; height: 2650px">
+
+  <div class="boardHead">
+    <span class="label1 bold boardKicker">2 · 메뉴 목록</span>
+    <h1 class="title3 bold">이름 검색 · 하위 카테고리 · 기준 가격 초과로 빠르게 찾기</h1>
+    <p class="body2-reading muted">관리자가 가장 자주 하는 일이 “찾기”라서 필터를 제목 바로 아래에 항상 펼쳐 두었습니다. 가격 필터는 입력한 금액을 <strong>초과</strong>하는 메뉴만 보여 줍니다. 카드의 메뉴 이름·가격·카테고리·주문 여부는 디자인 샘플 데이터이고, 실제 서버 연동 결과가 아닙니다. URL 은 <span class="tok label2">/?page=2&amp;q=&amp;category=&amp;price=</span> 형태로 조건을 유지합니다.</p>
+  </div>
+
+  <div class="frameRow">
+    <sc-for list="{{frames}}" as="f" hint-placeholder-count="3">
+      <div class="frameItem">
+        <div class="frameLabel"><span class="label1 bold">{{f.label}}</span><span class="chip label2 medium">{{f.tag}}</span></div>
+        <div class="frame {{f.frameClass}}" data-theme="{{f.theme}}">
+
+          <header class="siteHeader">
+            <div class="headerInner">
+              <a class="brand" href="02-menu-list.dc.html">
+                <span class="brandMark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></span>
+                <span class="heading2 bold">메뉴 관리</span>
+              </a>
+              <nav class="nav" aria-label="주요 메뉴">
+                <a class="navLink body2 medium" href="02-menu-list.dc.html" aria-current="page">메뉴 목록</a>
+                <a class="navLink body2 medium" href="04-menu-form.dc.html">메뉴 등록</a>
+              </nav>
+            </div>
+          </header>
+
+          <main class="siteMain">
+            <div class="page">
+
+              <div class="pageHeader">
+                <div class="pageHeaderText"><h1 class="pageTitle title3 bold">메뉴 목록</h1></div>
+                <div class="pageActions">
+                  <a class="btn btnPrimary label1 bold" href="04-menu-form.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>메뉴 등록</a>
+                </div>
+              </div>
+
+              <form class="panel filterPanel" role="search" aria-label="메뉴 찾기">
+                <div class="field field--search">
+                  <label class="fieldLabel label1 bold" for="q-{{f.key}}">이름 검색</label>
+                  <div class="control">
+                    <svg class="icon controlIcon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    <input class="input hasIcon body1" id="q-{{f.key}}" type="search" value="{{f.q}}" placeholder="메뉴 이름을 입력하세요">
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="fieldLabel label1 bold" for="cat-{{f.key}}">하위 카테고리</label>
+                  <div class="control">
+                    <sc-if value="{{f.notFiltered}}" hint-placeholder-val="{{ true }}">
+                      <select class="input select body1" id="cat-{{f.key}}">
+                        <option selected>전체</option>
+                        <optgroup label="식사"><option>한식</option></optgroup>
+                        <optgroup label="음료"><option>커피</option></optgroup>
+                        <optgroup label="디저트"><option>베이커리</option></optgroup>
+                      </select>
+                    </sc-if>
+                    <sc-if value="{{f.filtered}}" hint-placeholder-val="{{ false }}">
+                      <select class="input select body1" id="cat-{{f.key}}">
+                        <option>전체</option>
+                        <optgroup label="식사"><option>한식</option></optgroup>
+                        <optgroup label="음료"><option selected>커피</option></optgroup>
+                        <optgroup label="디저트"><option>베이커리</option></optgroup>
+                      </select>
+                    </sc-if>
+                    <svg class="icon selectChevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="fieldLabel label1 bold" for="price-{{f.key}}">기준 가격 초과</label>
+                  <div class="control">
+                    <input class="input hasSuffixLg body1" id="price-{{f.key}}" type="text" inputmode="numeric" value="{{f.price}}" placeholder="예: 5,000">
+                    <span class="suffix body1" aria-hidden="true">원 초과</span>
+                  </div>
+                </div>
+              </form>
+
+              <div class="resultBar">
+                <p class="resultText label1" role="status" aria-live="polite">
+                  <sc-if value="{{f.notFiltered}}" hint-placeholder-val="{{ true }}">
+                    <span>전체 <strong>{{f.total}}</strong>개</span>
+                  </sc-if>
+                  <sc-if value="{{f.filtered}}" hint-placeholder-val="{{ false }}">
+                    <span>조건에 맞는 메뉴 <strong>{{f.count}}</strong>개</span>
+                    <span class="muted">전체 {{f.total}}개 중</span>
+                    <button type="button" class="btn btnText label1 bold">필터 초기화</button>
+                  </sc-if>
+                </p>
+                <span class="label1 muted">{{f.pageText}}</span>
+              </div>
+
+              <ul class="menuGrid" aria-label="메뉴 목록">
+                <sc-for list="{{f.menus}}" as="m" hint-placeholder-count="6">
+                  <li>
+                    <a class="menuCard" href="03-menu-detail.dc.html">
+                      <div class="menuCardTop">
+                        <span class="chip label2 medium">{{m.cat}}</span>
+                        <sc-if value="{{m.ok}}" hint-placeholder-val="{{ true }}">
+                          <span class="badge badgePositive label2 bold"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>주문 가능</span>
+                        </sc-if>
+                        <sc-if value="{{m.notOk}}" hint-placeholder-val="{{ false }}">
+                          <span class="badge badgeNegative label2 bold"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>주문 불가</span>
+                        </sc-if>
+                      </div>
+                      <h3 class="menuName headline1 bold">{{m.name}}</h3>
+                      <p class="menuPrice heading2 bold">{{m.priceText}}</p>
+                      <div class="menuCardFoot caption1"><span>메뉴 번호 {{m.code}}</span><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></div>
+                    </a>
+                  </li>
+                </sc-for>
+              </ul>
+
+              <sc-if value="{{f.showPager}}" hint-placeholder-val="{{ true }}">
+                <nav class="pagination" aria-label="페이지 이동">
+                  <button type="button" class="pageBtn" aria-label="이전 페이지"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+                  <button type="button" class="pageBtn label1 medium" aria-label="1페이지">1</button>
+                  <button type="button" class="pageBtn label1 bold" aria-label="2페이지, 현재 페이지" aria-current="page">2</button>
+                  <button type="button" class="pageBtn label1 medium" aria-label="3페이지">3</button>
+                  <button type="button" class="pageBtn label1 medium" aria-label="4페이지">4</button>
+                  <button type="button" class="pageBtn" aria-label="다음 페이지"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+                </nav>
+                <nav class="paginationCompact" aria-label="페이지 이동">
+                  <button type="button" class="pageBtn" aria-label="이전 페이지"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+                  <span class="pageSummary label1 medium">2 / 4 페이지</span>
+                  <button type="button" class="pageBtn" aria-label="다음 페이지"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+                </nav>
+              </sc-if>
+
+            </div>
+          </main>
+
+          <footer class="siteFooter">
+            <span class="caption1">메뉴 관리</span>
+            <span class="caption1">Spring Boot REST API · React 연동 과제</span>
+          </footer>
+
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2348,"height":2650}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const fmt = n => n.toLocaleString('en-US') + '원';
+    const mk = (code, name, price, cat, ok) => ({ code, name, priceText: fmt(price), cat, ok, notOk: !ok });
+    // 디자인 샘플 데이터 (실제 서버 응답이 아님)
+    const page2 = [
+      mk(7, '소고기 비빔밥', 11000, '한식', true),
+      mk(8, '아메리카노', 4500, '커피', true),
+      mk(9, '초콜릿 브라우니', 5500, '베이커리', false),
+      mk(10, '매콤 해산물 순두부찌개 정식 (공기밥 포함)', 13000, '한식', true),
+      mk(11, '카페라테', 5000, '커피', true),
+      mk(12, '크루아상', 4200, '베이커리', true),
+    ];
+    const coffeeOver4000 = [
+      mk(8, '아메리카노', 4500, '커피', true),
+      mk(11, '카페라테', 5000, '커피', true),
+      mk(14, '콜드브루', 5500, '커피', false),
+    ];
+    const base = { q: '', price: '', total: 23, notFiltered: true, filtered: false, showPager: true, pageText: '2 / 4 페이지', count: 23, menus: page2 };
+    const frames = [
+      { ...base, key: 'd', label: '데스크톱', tag: '라이트 · 1280px · 기본 (2쪽)', frameClass: 'frame--desktop', theme: 'light' },
+      { ...base, key: 'm', label: '모바일', tag: '라이트 · 390px · 기본 (2쪽)', frameClass: 'frame--mobile', theme: 'light' },
+      { ...base, key: 'md', label: '모바일', tag: '다크 · 390px · 필터 적용', frameClass: 'frame--mobile', theme: 'dark',
+        price: '4,000', notFiltered: false, filtered: true, showPager: false, pageText: '1 / 1 페이지', count: 3, menus: coffeeOver4000 },
+    ];
+    return { frames };
+  }
+}
+</script>
+</body>
+</html>

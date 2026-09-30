@@ -1,0 +1,10 @@
+# 과제 전용 파일 DB. 기존 MySQL menudb를 변경하지 않는다.
+spring:
+  datasource:
+    url: jdbc:h2:file:./.runtime/data/vibe-menu;MODE=MySQL;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update

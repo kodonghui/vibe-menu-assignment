@@ -1,0 +1,2510 @@
+{
+  "$meta": {
+    "name": "Montage (Wanted Design System) tokens",
+    "source": {
+      "repo": "montage-web-main (wanteddev/montage-web)",
+      "packages": {
+        "@wanteddev/wds-theme": "3.12.2",
+        "@wanteddev/wds": "3.12.2"
+      },
+      "files": [
+        "packages/wds-theme/src/theme/** (atomic, semantic, spacing, opacity, breakpoint, z-index)",
+        "packages/wds-theme/src/utils/index.ts (addHexOpacity)",
+        "packages/wds/src/components/typography/style.ts (variantMap, getWeightMap)"
+      ],
+      "method": "원본 .ts 를 Node로 직접 실행해 값을 추출하고, semantic 소스 문장 파싱 결과(ref·alpha)로 재계산해 교차 검증함"
+    },
+    "generatedAt": "2026-09-29",
+    "notes": {
+      "atomic": "atomic 팔레트는 light/dark 테마가 같은 객체를 공유하므로 값이 하나뿐임. 테마별 차이는 semantic 에서 어떤 atomic 을 참조하느냐로 생김.",
+      "alpha": "반투명 색은 원본 addHexOpacity(hex, a) 와 동일하게 계산: hex 앞 7자(#RRGGBB) + round(a*255) 를 2자리 대문자 16진수로 붙인 #RRGGBBAA. 따라서 실제 알파는 1/255 단위로 반올림됨 (예: 0.61 → 9C = 156/255).",
+      "alphaCaseQuirk": "atomic.common.100 이 소문자 '#ffffff' 라서 이를 기반으로 한 값은 '#ffffff14' 처럼 RGB는 소문자, 알파만 대문자로 나옴 (원본 동작 그대로).",
+      "opacityToken": "semantic 반투명 값의 alpha 가 opacity 토큰에서 왔으면 opacityToken 에 표시, null 이면 소스에 숫자가 직접 적힘 (dark line.normal.normal = 0.32).",
+      "usageSource": "'docs' = montage 문서 사이트 semantic 색상 페이지의 그룹 설명을 근거로 씀. 'derived' = 공식 설명이 없어 토큰 이름·구조로 작성함. label 그룹은 문서 설명이 Primary 설명을 복사한 오류 상태라 derived 처리.",
+      "typographyPx": "fontSizePx·lineHeightPx 는 1rem = 16px(브라우저 기본값) 기준 환산값. 원본 값은 rem.",
+      "fontFamily": "토큰에 없음. packages/wds/README 에서 Pretendard JP(CDN) 를 불러오도록 안내함.",
+      "excluded": "semantic.platform.ios.navigation 은 CSS 문자열 스니펫(배경 88% + blur 32px)이라 색 토큰에서 제외함 (원본 ThemeColorsToken 타입에서도 제외됨). radius는 컴포넌트 소스의 상수를 따로 추출해 보충함."
+    },
+    "radiusExtraction": {
+      "source": "wanteddev/montage-web / packages/wds/src/components/**/style.ts",
+      "method": "상수인 단일 border-radius 및 corner radius 선언만 추출. 동적 표현식·inherit는 제외.",
+      "baseTokensSha256": "b6e8620c9b0bb0f3239b3ccd83f2ee9adfe585f5e27513402d708045235e8f33",
+      "count": 16
+    }
+  },
+  "color": {
+    "atomic": {
+      "blue": {
+        "10": {
+          "value": "#001536",
+          "usage": "원색 blue 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#002966",
+          "usage": "원색 blue 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#003E9C",
+          "usage": "원색 blue 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#0054D1",
+          "usage": "원색 blue 40단계 – 다음 semantic 토큰의 원본: primary.heavy(light)"
+        },
+        "45": {
+          "value": "#005EEB",
+          "usage": "원색 blue 45단계 – 다음 semantic 토큰의 원본: primary.strong(light), accent.foreground.blue(light)"
+        },
+        "50": {
+          "value": "#0066FF",
+          "usage": "원색 blue 50단계 – 다음 semantic 토큰의 원본: primary.normal(light), primary.heavy(dark), line.primary.normal(light), line.primary.strong(light), inverse.primary(dark)"
+        },
+        "55": {
+          "value": "#1A75FF",
+          "usage": "원색 blue 55단계 – 다음 semantic 토큰의 원본: primary.strong(dark)"
+        },
+        "60": {
+          "value": "#3385FF",
+          "usage": "원색 blue 60단계 – 다음 semantic 토큰의 원본: primary.normal(dark), line.primary.normal(dark), line.primary.strong(dark), inverse.primary(light)"
+        },
+        "65": {
+          "value": "#4F95FF",
+          "usage": "원색 blue 65단계 – 다음 semantic 토큰의 원본: accent.foreground.blue(dark)"
+        },
+        "70": {
+          "value": "#69A5FF",
+          "usage": "원색 blue 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#9EC5FF",
+          "usage": "원색 blue 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#C9DEFE",
+          "usage": "원색 blue 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#EAF2FE",
+          "usage": "원색 blue 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#F7FBFF",
+          "usage": "원색 blue 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "common": {
+        "0": {
+          "value": "#000000",
+          "usage": "원색 common 0단계 – 다음 semantic 토큰의 원본: static.black(light/dark), label.strong(light)"
+        },
+        "100": {
+          "value": "#ffffff",
+          "usage": "원색 common 100단계 – 다음 semantic 토큰의 원본: static.white(light/dark), label.strong(dark), background.normal.normal(light), background.elevated.normal(light), background.transparent.normal(light), background.transparent.alternative(light), inverse.background(dark)"
+        }
+      },
+      "coolNeutral": {
+        "5": {
+          "value": "#0F0F10",
+          "usage": "원색 coolNeutral 5단계 – 다음 semantic 토큰의 원본: background.normal.alternative(dark)"
+        },
+        "7": {
+          "value": "#141415",
+          "usage": "원색 coolNeutral 7단계 – 다음 semantic 토큰의 원본: background.elevated.alternative(dark)"
+        },
+        "10": {
+          "value": "#171719",
+          "usage": "원색 coolNeutral 10단계 – 다음 semantic 토큰의 원본: label.normal(light), inverse.label(dark), material.dimmer(light/dark)"
+        },
+        "15": {
+          "value": "#1B1C1E",
+          "usage": "원색 coolNeutral 15단계 – 다음 semantic 토큰의 원본: background.normal.normal(dark), inverse.background(light)"
+        },
+        "17": {
+          "value": "#212225",
+          "usage": "원색 coolNeutral 17단계 – 다음 semantic 토큰의 원본: background.elevated.normal(dark), background.transparent.normal(dark), background.transparent.alternative(dark)"
+        },
+        "20": {
+          "value": "#292A2D",
+          "usage": "원색 coolNeutral 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "22": {
+          "value": "#2E2F33",
+          "usage": "원색 coolNeutral 22단계 – 다음 semantic 토큰의 원본: label.neutral(light), interaction.disable(dark), line.solid.alternative(dark)"
+        },
+        "23": {
+          "value": "#333438",
+          "usage": "원색 coolNeutral 23단계 – 다음 semantic 토큰의 원본: line.solid.neutral(dark)"
+        },
+        "25": {
+          "value": "#37383C",
+          "usage": "원색 coolNeutral 25단계 – 다음 semantic 토큰의 원본: label.alternative(light), label.assistive(light), label.disable(light), line.solid.normal(dark)"
+        },
+        "30": {
+          "value": "#46474C",
+          "usage": "원색 coolNeutral 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#5A5C63",
+          "usage": "원색 coolNeutral 40단계 – 다음 semantic 토큰의 원본: interaction.inactive(dark)"
+        },
+        "50": {
+          "value": "#70737C",
+          "usage": "원색 coolNeutral 50단계 – 다음 semantic 토큰의 원본: line.normal.normal(light/dark), line.normal.neutral(light/dark), line.normal.alternative(light/dark), fill.normal(light/dark), fill.strong(light/dark), fill.alternative(light/dark)"
+        },
+        "60": {
+          "value": "#878A93",
+          "usage": "원색 coolNeutral 60단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "70": {
+          "value": "#989BA2",
+          "usage": "원색 coolNeutral 70단계 – 다음 semantic 토큰의 원본: label.disable(dark), interaction.inactive(light)"
+        },
+        "80": {
+          "value": "#AEB0B6",
+          "usage": "원색 coolNeutral 80단계 – 다음 semantic 토큰의 원본: label.alternative(dark), label.assistive(dark)"
+        },
+        "90": {
+          "value": "#C2C4C8",
+          "usage": "원색 coolNeutral 90단계 – 다음 semantic 토큰의 원본: label.neutral(dark)"
+        },
+        "95": {
+          "value": "#DBDCDF",
+          "usage": "원색 coolNeutral 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "96": {
+          "value": "#E1E2E4",
+          "usage": "원색 coolNeutral 96단계 – 다음 semantic 토큰의 원본: line.solid.normal(light)"
+        },
+        "97": {
+          "value": "#EAEBEC",
+          "usage": "원색 coolNeutral 97단계 – 다음 semantic 토큰의 원본: line.solid.neutral(light)"
+        },
+        "98": {
+          "value": "#F4F4F5",
+          "usage": "원색 coolNeutral 98단계 – 다음 semantic 토큰의 원본: interaction.disable(light), line.solid.alternative(light)"
+        },
+        "99": {
+          "value": "#F7F7F8",
+          "usage": "원색 coolNeutral 99단계 – 다음 semantic 토큰의 원본: label.normal(dark), background.normal.alternative(light), background.elevated.alternative(light), inverse.label(light)"
+        }
+      },
+      "cyan": {
+        "10": {
+          "value": "#00252B",
+          "usage": "원색 cyan 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#004854",
+          "usage": "원색 cyan 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#006F82",
+          "usage": "원색 cyan 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#0098B2",
+          "usage": "원색 cyan 40단계 – 다음 semantic 토큰의 원본: accent.foreground.cyan(light)"
+        },
+        "50": {
+          "value": "#00BDDE",
+          "usage": "원색 cyan 50단계 – 다음 semantic 토큰의 원본: accent.background.cyan(light), accent.foreground.cyan(dark)"
+        },
+        "60": {
+          "value": "#28D0ED",
+          "usage": "원색 cyan 60단계 – 다음 semantic 토큰의 원본: accent.background.cyan(dark)"
+        },
+        "70": {
+          "value": "#57DFF7",
+          "usage": "원색 cyan 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#8AEDFF",
+          "usage": "원색 cyan 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#B5F4FF",
+          "usage": "원색 cyan 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#DEFAFF",
+          "usage": "원색 cyan 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#F7FEFF",
+          "usage": "원색 cyan 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "green": {
+        "10": {
+          "value": "#00240C",
+          "usage": "원색 green 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#004517",
+          "usage": "원색 green 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#006E25",
+          "usage": "원색 green 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#009632",
+          "usage": "원색 green 40단계 – 다음 semantic 토큰의 원본: accent.foreground.green(light)"
+        },
+        "50": {
+          "value": "#00BF40",
+          "usage": "원색 green 50단계 – 다음 semantic 토큰의 원본: background.status.positive(light), line.status.positive.normal(light), status.positive(light)"
+        },
+        "60": {
+          "value": "#1ED45A",
+          "usage": "원색 green 60단계 – 다음 semantic 토큰의 원본: background.status.positive(dark), line.status.positive.normal(dark), status.positive(dark), accent.foreground.green(dark)"
+        },
+        "70": {
+          "value": "#49E57D",
+          "usage": "원색 green 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#7DF5A5",
+          "usage": "원색 green 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#ACFCC7",
+          "usage": "원색 green 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#D9FFE6",
+          "usage": "원색 green 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#F2FFF6",
+          "usage": "원색 green 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "lightBlue": {
+        "10": {
+          "value": "#002130",
+          "usage": "원색 lightBlue 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#004261",
+          "usage": "원색 lightBlue 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#006796",
+          "usage": "원색 lightBlue 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#008DCF",
+          "usage": "원색 lightBlue 40단계 – 다음 semantic 토큰의 원본: accent.foreground.lightBlue(light)"
+        },
+        "50": {
+          "value": "#00AEFF",
+          "usage": "원색 lightBlue 50단계 – 다음 semantic 토큰의 원본: accent.background.lightBlue(light), accent.foreground.lightBlue(dark)"
+        },
+        "60": {
+          "value": "#3DC2FF",
+          "usage": "원색 lightBlue 60단계 – 다음 semantic 토큰의 원본: accent.background.lightBlue(dark)"
+        },
+        "70": {
+          "value": "#70D2FF",
+          "usage": "원색 lightBlue 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#A1E1FF",
+          "usage": "원색 lightBlue 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#C4ECFE",
+          "usage": "원색 lightBlue 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#E5F6FE",
+          "usage": "원색 lightBlue 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#F7FDFF",
+          "usage": "원색 lightBlue 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "lime": {
+        "10": {
+          "value": "#112900",
+          "usage": "원색 lime 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#225200",
+          "usage": "원색 lime 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#347D00",
+          "usage": "원색 lime 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "37": {
+          "value": "#429E00",
+          "usage": "원색 lime 37단계 – 다음 semantic 토큰의 원본: accent.foreground.lime(light)"
+        },
+        "40": {
+          "value": "#48AD00",
+          "usage": "원색 lime 40단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "50": {
+          "value": "#58CF04",
+          "usage": "원색 lime 50단계 – 다음 semantic 토큰의 원본: accent.background.lime(light), accent.foreground.lime(dark)"
+        },
+        "60": {
+          "value": "#6BE016",
+          "usage": "원색 lime 60단계 – 다음 semantic 토큰의 원본: accent.background.lime(dark)"
+        },
+        "70": {
+          "value": "#88F03E",
+          "usage": "원색 lime 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#AEF779",
+          "usage": "원색 lime 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#CCFCA9",
+          "usage": "원색 lime 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#E6FFD4",
+          "usage": "원색 lime 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#F8FFF2",
+          "usage": "원색 lime 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "neutral": {
+        "5": {
+          "value": "#0F0F0F",
+          "usage": "원색 neutral 5단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "10": {
+          "value": "#171717",
+          "usage": "원색 neutral 10단계 – 다음 semantic 토큰의 원본: elevation.shadow.normal.xsmall(light+dark), elevation.shadow.normal.small(light+dark), elevation.shadow.normal.medium(light+dark), elevation.shadow.normal.large(light+dark), elevation.shadow.normal.xlarge(light+dark), elevation.shadow.drop.xsmall(light+dark), elevation.shadow.drop.small(light+dark), elevation.shadow.drop.medium(light+dark), elevation.shadow.drop.large(light+dark), elevation.shadow.drop.xlarge(light+dark), elevation.shadow.spread.small(light+dark), elevation.shadow.spread.medium(light+dark)"
+        },
+        "15": {
+          "value": "#1C1C1C",
+          "usage": "원색 neutral 15단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#2A2A2A",
+          "usage": "원색 neutral 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "22": {
+          "value": "#303030",
+          "usage": "원색 neutral 22단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#474747",
+          "usage": "원색 neutral 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#5C5C5C",
+          "usage": "원색 neutral 40단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "50": {
+          "value": "#737373",
+          "usage": "원색 neutral 50단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "60": {
+          "value": "#8A8A8A",
+          "usage": "원색 neutral 60단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "70": {
+          "value": "#9B9B9B",
+          "usage": "원색 neutral 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#B0B0B0",
+          "usage": "원색 neutral 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#C4C4C4",
+          "usage": "원색 neutral 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#DCDCDC",
+          "usage": "원색 neutral 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#F7F7F7",
+          "usage": "원색 neutral 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "orange": {
+        "10": {
+          "value": "#361E00",
+          "usage": "원색 orange 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#663A00",
+          "usage": "원색 orange 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#9C5800",
+          "usage": "원색 orange 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "39": {
+          "value": "#D17600",
+          "usage": "원색 orange 39단계 – 다음 semantic 토큰의 원본: accent.foreground.orange(light)"
+        },
+        "40": {
+          "value": "#D47800",
+          "usage": "원색 orange 40단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "50": {
+          "value": "#FF9200",
+          "usage": "원색 orange 50단계 – 다음 semantic 토큰의 원본: background.status.cautionary(light), line.status.cautionary.normal(light), status.cautionary(light), accent.foreground.orange(dark)"
+        },
+        "60": {
+          "value": "#FFA938",
+          "usage": "원색 orange 60단계 – 다음 semantic 토큰의 원본: background.status.cautionary(dark), line.status.cautionary.normal(dark), status.cautionary(dark)"
+        },
+        "70": {
+          "value": "#FFC06E",
+          "usage": "원색 orange 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#FFD49C",
+          "usage": "원색 orange 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#FEE6C6",
+          "usage": "원색 orange 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#FEF4E6",
+          "usage": "원색 orange 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#FFFCF7",
+          "usage": "원색 orange 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "pink": {
+        "10": {
+          "value": "#3D0133",
+          "usage": "원색 pink 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#730560",
+          "usage": "원색 pink 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#A81690",
+          "usage": "원색 pink 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#D331B8",
+          "usage": "원색 pink 40단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "46": {
+          "value": "#E846CD",
+          "usage": "원색 pink 46단계 – 다음 semantic 토큰의 원본: accent.foreground.pink(light)"
+        },
+        "50": {
+          "value": "#F553DA",
+          "usage": "원색 pink 50단계 – 다음 semantic 토큰의 원본: accent.background.pink(light)"
+        },
+        "60": {
+          "value": "#FA73E3",
+          "usage": "원색 pink 60단계 – 다음 semantic 토큰의 원본: accent.background.pink(dark), accent.foreground.pink(dark)"
+        },
+        "70": {
+          "value": "#FF94ED",
+          "usage": "원색 pink 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#FFB8F3",
+          "usage": "원색 pink 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#FED3F7",
+          "usage": "원색 pink 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#FEECFB",
+          "usage": "원색 pink 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#FFFAFE",
+          "usage": "원색 pink 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "purple": {
+        "10": {
+          "value": "#290247",
+          "usage": "원색 purple 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#580A7D",
+          "usage": "원색 purple 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#861CB8",
+          "usage": "원색 purple 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#AD36E3",
+          "usage": "원색 purple 40단계 – 다음 semantic 토큰의 원본: accent.foreground.purple(light)"
+        },
+        "50": {
+          "value": "#CB59FF",
+          "usage": "원색 purple 50단계 – 다음 semantic 토큰의 원본: accent.background.purple(light)"
+        },
+        "60": {
+          "value": "#D478FF",
+          "usage": "원색 purple 60단계 – 다음 semantic 토큰의 원본: accent.background.purple(dark), accent.foreground.purple(dark)"
+        },
+        "70": {
+          "value": "#DE96FF",
+          "usage": "원색 purple 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#E9BAFF",
+          "usage": "원색 purple 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#F2D6FF",
+          "usage": "원색 purple 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#F9EDFF",
+          "usage": "원색 purple 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#FEFBFF",
+          "usage": "원색 purple 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "red": {
+        "10": {
+          "value": "#3B0101",
+          "usage": "원색 red 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#730303",
+          "usage": "원색 red 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#B00C0C",
+          "usage": "원색 red 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#E52222",
+          "usage": "원색 red 40단계 – 다음 semantic 토큰의 원본: accent.foreground.red(light)"
+        },
+        "50": {
+          "value": "#FF4242",
+          "usage": "원색 red 50단계 – 다음 semantic 토큰의 원본: background.status.negative(light), line.status.negative.normal(light), line.status.negative.strong(light), status.negative(light)"
+        },
+        "60": {
+          "value": "#FF6363",
+          "usage": "원색 red 60단계 – 다음 semantic 토큰의 원본: background.status.negative(dark), line.status.negative.normal(dark), line.status.negative.strong(dark), status.negative(dark), accent.foreground.red(dark)"
+        },
+        "70": {
+          "value": "#FF8C8C",
+          "usage": "원색 red 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#FFB5B5",
+          "usage": "원색 red 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#FED5D5",
+          "usage": "원색 red 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#FEECEC",
+          "usage": "원색 red 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#FFFAFA",
+          "usage": "원색 red 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "violet": {
+        "10": {
+          "value": "#11024D",
+          "usage": "원색 violet 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#23098F",
+          "usage": "원색 violet 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#3A16C9",
+          "usage": "원색 violet 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#4F29E5",
+          "usage": "원색 violet 40단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "45": {
+          "value": "#5B37ED",
+          "usage": "원색 violet 45단계 – 다음 semantic 토큰의 원본: accent.foreground.violet(light)"
+        },
+        "50": {
+          "value": "#6541F2",
+          "usage": "원색 violet 50단계 – 다음 semantic 토큰의 원본: accent.background.violet(light)"
+        },
+        "60": {
+          "value": "#7D5EF7",
+          "usage": "원색 violet 60단계 – 다음 semantic 토큰의 원본: accent.background.violet(dark)"
+        },
+        "70": {
+          "value": "#9E86FC",
+          "usage": "원색 violet 70단계 – 다음 semantic 토큰의 원본: accent.foreground.violet(dark)"
+        },
+        "80": {
+          "value": "#C0B0FF",
+          "usage": "원색 violet 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#DBD3FE",
+          "usage": "원색 violet 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#F0ECFE",
+          "usage": "원색 violet 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#FBFAFF",
+          "usage": "원색 violet 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      },
+      "redOrange": {
+        "10": {
+          "value": "#290F00",
+          "usage": "원색 redOrange 10단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "20": {
+          "value": "#592100",
+          "usage": "원색 redOrange 20단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "30": {
+          "value": "#913500",
+          "usage": "원색 redOrange 30단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "40": {
+          "value": "#C94A00",
+          "usage": "원색 redOrange 40단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "48": {
+          "value": "#F55A00",
+          "usage": "원색 redOrange 48단계 – 다음 semantic 토큰의 원본: accent.foreground.redOrange(light)"
+        },
+        "50": {
+          "value": "#FF5E00",
+          "usage": "원색 redOrange 50단계 – 다음 semantic 토큰의 원본: accent.background.redOrange(light)"
+        },
+        "60": {
+          "value": "#FF7B2E",
+          "usage": "원색 redOrange 60단계 – 다음 semantic 토큰의 원본: accent.background.redOrange(dark), accent.foreground.redOrange(dark)"
+        },
+        "70": {
+          "value": "#FF9B61",
+          "usage": "원색 redOrange 70단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "80": {
+          "value": "#FFBD96",
+          "usage": "원색 redOrange 80단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "90": {
+          "value": "#FED9C4",
+          "usage": "원색 redOrange 90단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "95": {
+          "value": "#FEEEE5",
+          "usage": "원색 redOrange 95단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        },
+        "99": {
+          "value": "#FFFAF7",
+          "usage": "원색 redOrange 99단계 – semantic 토큰이 참조하지 않는 팔레트 색 (직접 쓸 때는 semantic 우선)"
+        }
+      }
+    },
+    "semantic": {
+      "static": {
+        "white": {
+          "usage": "테마와 상관없이 항상 흰색으로 고정해야 하는 요소 (예: 진한 배경 위 글자·아이콘)",
+          "usageSource": "docs",
+          "light": {
+            "value": "#ffffff",
+            "ref": "atomic.common.100"
+          },
+          "dark": {
+            "value": "#ffffff",
+            "ref": "atomic.common.100"
+          }
+        },
+        "black": {
+          "usage": "테마와 상관없이 항상 검정으로 고정해야 하는 요소",
+          "usageSource": "docs",
+          "light": {
+            "value": "#000000",
+            "ref": "atomic.common.0"
+          },
+          "dark": {
+            "value": "#000000",
+            "ref": "atomic.common.0"
+          }
+        }
+      },
+      "primary": {
+        "normal": {
+          "usage": "화면에서 가장 중요한 요소(주요 액션·강조)의 기본 브랜드 색",
+          "usageSource": "docs",
+          "light": {
+            "value": "#0066FF",
+            "ref": "atomic.blue.50"
+          },
+          "dark": {
+            "value": "#3385FF",
+            "ref": "atomic.blue.60"
+          }
+        },
+        "strong": {
+          "usage": "가장 중요한 요소의 강조 색 – Normal보다 한 단계 진함, 상황에 맞게 선택",
+          "usageSource": "docs",
+          "light": {
+            "value": "#005EEB",
+            "ref": "atomic.blue.45"
+          },
+          "dark": {
+            "value": "#1A75FF",
+            "ref": "atomic.blue.55"
+          }
+        },
+        "heavy": {
+          "usage": "가장 중요한 요소의 강조 색 – Strong보다 한 단계 더 진함",
+          "usageSource": "docs",
+          "light": {
+            "value": "#0054D1",
+            "ref": "atomic.blue.40"
+          },
+          "dark": {
+            "value": "#0066FF",
+            "ref": "atomic.blue.50"
+          }
+        }
+      },
+      "label": {
+        "normal": {
+          "usage": "기본 텍스트(본문·제목) 색",
+          "usageSource": "derived",
+          "light": {
+            "value": "#171719",
+            "ref": "atomic.coolNeutral.10"
+          },
+          "dark": {
+            "value": "#F7F7F8",
+            "ref": "atomic.coolNeutral.99"
+          }
+        },
+        "strong": {
+          "usage": "가장 강하게 강조하는 텍스트 색 (light 순검정 / dark 순백)",
+          "usageSource": "derived",
+          "light": {
+            "value": "#000000",
+            "ref": "atomic.common.0"
+          },
+          "dark": {
+            "value": "#ffffff",
+            "ref": "atomic.common.100"
+          }
+        },
+        "neutral": {
+          "usage": "Normal보다 약간 약한 텍스트 색 (88% 불투명)",
+          "usageSource": "derived",
+          "light": {
+            "value": "#2E2F33E0",
+            "ref": "atomic.coolNeutral.22",
+            "alpha": 0.88,
+            "opacityToken": "opacity.88"
+          },
+          "dark": {
+            "value": "#C2C4C8E0",
+            "ref": "atomic.coolNeutral.90",
+            "alpha": 0.88,
+            "opacityToken": "opacity.88"
+          }
+        },
+        "alternative": {
+          "usage": "보조 설명·부가 정보 텍스트 색 (61% 불투명)",
+          "usageSource": "derived",
+          "light": {
+            "value": "#37383C9C",
+            "ref": "atomic.coolNeutral.25",
+            "alpha": 0.61,
+            "opacityToken": "opacity.61"
+          },
+          "dark": {
+            "value": "#AEB0B69C",
+            "ref": "atomic.coolNeutral.80",
+            "alpha": 0.61,
+            "opacityToken": "opacity.61"
+          }
+        },
+        "assistive": {
+          "usage": "Alternative보다 더 약한 안내성 텍스트 색 (28% 불투명)",
+          "usageSource": "derived",
+          "light": {
+            "value": "#37383C47",
+            "ref": "atomic.coolNeutral.25",
+            "alpha": 0.28,
+            "opacityToken": "opacity.28"
+          },
+          "dark": {
+            "value": "#AEB0B647",
+            "ref": "atomic.coolNeutral.80",
+            "alpha": 0.28,
+            "opacityToken": "opacity.28"
+          }
+        },
+        "disable": {
+          "usage": "비활성 상태 요소의 텍스트 색 (16% 불투명)",
+          "usageSource": "derived",
+          "light": {
+            "value": "#37383C29",
+            "ref": "atomic.coolNeutral.25",
+            "alpha": 0.16,
+            "opacityToken": "opacity.16"
+          },
+          "dark": {
+            "value": "#989BA229",
+            "ref": "atomic.coolNeutral.70",
+            "alpha": 0.16,
+            "opacityToken": "opacity.16"
+          }
+        }
+      },
+      "background": {
+        "normal": {
+          "normal": {
+            "usage": "일반적인 화면의 기본 배경",
+            "usageSource": "docs",
+            "light": {
+              "value": "#ffffff",
+              "ref": "atomic.common.100"
+            },
+            "dark": {
+              "value": "#1B1C1E",
+              "ref": "atomic.coolNeutral.15"
+            }
+          },
+          "alternative": {
+            "usage": "카드 UI 등 요소와 배경의 구분을 분명히 둘 때 대비용 배경",
+            "usageSource": "docs",
+            "light": {
+              "value": "#F7F7F8",
+              "ref": "atomic.coolNeutral.99"
+            },
+            "dark": {
+              "value": "#0F0F10",
+              "ref": "atomic.coolNeutral.5"
+            }
+          }
+        },
+        "elevated": {
+          "normal": {
+            "usage": "모달처럼 층위가 있는 화면의 배경 (dark에서 Normal 배경보다 밝음)",
+            "usageSource": "docs",
+            "light": {
+              "value": "#ffffff",
+              "ref": "atomic.common.100"
+            },
+            "dark": {
+              "value": "#212225",
+              "ref": "atomic.coolNeutral.17"
+            }
+          },
+          "alternative": {
+            "usage": "층위가 있는 화면 안에서 대비가 필요한 영역의 배경",
+            "usageSource": "docs",
+            "light": {
+              "value": "#F7F7F8",
+              "ref": "atomic.coolNeutral.99"
+            },
+            "dark": {
+              "value": "#141415",
+              "ref": "atomic.coolNeutral.7"
+            }
+          }
+        },
+        "transparent": {
+          "normal": {
+            "usage": "Chrome(반투명) 효과를 적용하는 영역의 배경",
+            "usageSource": "docs",
+            "light": {
+              "value": "#ffffff14",
+              "ref": "atomic.common.100",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            },
+            "dark": {
+              "value": "#2122259C",
+              "ref": "atomic.coolNeutral.17",
+              "alpha": 0.61,
+              "opacityToken": "opacity.61"
+            }
+          },
+          "alternative": {
+            "usage": "Chrome(반투명) 효과 배경 – Android에서만 사용",
+            "usageSource": "docs",
+            "light": {
+              "value": "#ffffff47",
+              "ref": "atomic.common.100",
+              "alpha": 0.28,
+              "opacityToken": "opacity.28"
+            },
+            "dark": {
+              "value": "#2122259C",
+              "ref": "atomic.coolNeutral.17",
+              "alpha": 0.61,
+              "opacityToken": "opacity.61"
+            }
+          }
+        },
+        "status": {
+          "negative": {
+            "usage": "오류·위험(Negative) 상태 영역의 옅은 배경",
+            "usageSource": "derived",
+            "light": {
+              "value": "#FF424214",
+              "ref": "atomic.red.50",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            },
+            "dark": {
+              "value": "#FF636314",
+              "ref": "atomic.red.60",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            }
+          },
+          "cautionary": {
+            "usage": "주의(Cautionary) 상태 영역의 옅은 배경",
+            "usageSource": "derived",
+            "light": {
+              "value": "#FF920014",
+              "ref": "atomic.orange.50",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            },
+            "dark": {
+              "value": "#FFA93814",
+              "ref": "atomic.orange.60",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            }
+          },
+          "positive": {
+            "usage": "성공·긍정(Positive) 상태 영역의 옅은 배경",
+            "usageSource": "derived",
+            "light": {
+              "value": "#00BF4014",
+              "ref": "atomic.green.50",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            },
+            "dark": {
+              "value": "#1ED45A14",
+              "ref": "atomic.green.60",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            }
+          }
+        }
+      },
+      "interaction": {
+        "inactive": {
+          "usage": "활성화할 수 있지만 현재 꺼져 있는 상호작용 요소 (예: 꺼진 스위치)",
+          "usageSource": "docs",
+          "light": {
+            "value": "#989BA2",
+            "ref": "atomic.coolNeutral.70"
+          },
+          "dark": {
+            "value": "#5A5C63",
+            "ref": "atomic.coolNeutral.40"
+          }
+        },
+        "disable": {
+          "usage": "상호작용이 불가능한 상태의 요소",
+          "usageSource": "docs",
+          "light": {
+            "value": "#F4F4F5",
+            "ref": "atomic.coolNeutral.98"
+          },
+          "dark": {
+            "value": "#2E2F33",
+            "ref": "atomic.coolNeutral.22"
+          }
+        }
+      },
+      "line": {
+        "normal": {
+          "normal": {
+            "usage": "Divider·Border 기본 선 (반투명 – 선끼리 중첩 금지)",
+            "usageSource": "docs",
+            "light": {
+              "value": "#70737C38",
+              "ref": "atomic.coolNeutral.50",
+              "alpha": 0.22,
+              "opacityToken": "opacity.22"
+            },
+            "dark": {
+              "value": "#70737C52",
+              "ref": "atomic.coolNeutral.50",
+              "alpha": 0.32,
+              "opacityToken": null
+            }
+          },
+          "neutral": {
+            "usage": "Divider·Border 선 – Normal보다 약함 (반투명 – 중첩 금지)",
+            "usageSource": "docs",
+            "light": {
+              "value": "#70737C29",
+              "ref": "atomic.coolNeutral.50",
+              "alpha": 0.16,
+              "opacityToken": "opacity.16"
+            },
+            "dark": {
+              "value": "#70737C47",
+              "ref": "atomic.coolNeutral.50",
+              "alpha": 0.28,
+              "opacityToken": "opacity.28"
+            }
+          },
+          "alternative": {
+            "usage": "Divider·Border 선 – 가장 약함 (반투명 – 중첩 금지)",
+            "usageSource": "docs",
+            "light": {
+              "value": "#70737C14",
+              "ref": "atomic.coolNeutral.50",
+              "alpha": 0.08,
+              "opacityToken": "opacity.8"
+            },
+            "dark": {
+              "value": "#70737C38",
+              "ref": "atomic.coolNeutral.50",
+              "alpha": 0.22,
+              "opacityToken": "opacity.22"
+            }
+          }
+        },
+        "solid": {
+          "normal": {
+            "usage": "Border와 Divider가 겹칠 때 쓰는 불투명 선 – 기본",
+            "usageSource": "docs",
+            "light": {
+              "value": "#E1E2E4",
+              "ref": "atomic.coolNeutral.96"
+            },
+            "dark": {
+              "value": "#37383C",
+              "ref": "atomic.coolNeutral.25"
+            }
+          },
+          "neutral": {
+            "usage": "Border와 Divider가 겹칠 때 쓰는 불투명 선 – Normal보다 약함",
+            "usageSource": "docs",
+            "light": {
+              "value": "#EAEBEC",
+              "ref": "atomic.coolNeutral.97"
+            },
+            "dark": {
+              "value": "#333438",
+              "ref": "atomic.coolNeutral.23"
+            }
+          },
+          "alternative": {
+            "usage": "Border와 Divider가 겹칠 때 쓰는 불투명 선 – 가장 약함",
+            "usageSource": "docs",
+            "light": {
+              "value": "#F4F4F5",
+              "ref": "atomic.coolNeutral.98"
+            },
+            "dark": {
+              "value": "#2E2F33",
+              "ref": "atomic.coolNeutral.22"
+            }
+          }
+        },
+        "primary": {
+          "normal": {
+            "usage": "Primary 색으로 강조하는 테두리 선",
+            "usageSource": "derived",
+            "light": {
+              "value": "#0066FF47",
+              "ref": "atomic.blue.50",
+              "alpha": 0.28,
+              "opacityToken": "opacity.28"
+            },
+            "dark": {
+              "value": "#3385FF47",
+              "ref": "atomic.blue.60",
+              "alpha": 0.28,
+              "opacityToken": "opacity.28"
+            }
+          },
+          "strong": {
+            "usage": "Primary 색으로 더 강하게 강조하는 테두리 선",
+            "usageSource": "derived",
+            "light": {
+              "value": "#0066FF6E",
+              "ref": "atomic.blue.50",
+              "alpha": 0.43,
+              "opacityToken": "opacity.43"
+            },
+            "dark": {
+              "value": "#3385FF6E",
+              "ref": "atomic.blue.60",
+              "alpha": 0.43,
+              "opacityToken": "opacity.43"
+            }
+          }
+        },
+        "status": {
+          "negative": {
+            "normal": {
+              "usage": "오류·위험 상태 요소의 테두리 선",
+              "usageSource": "derived",
+              "light": {
+                "value": "#FF42426E",
+                "ref": "atomic.red.50",
+                "alpha": 0.43,
+                "opacityToken": "opacity.43"
+              },
+              "dark": {
+                "value": "#FF63636E",
+                "ref": "atomic.red.60",
+                "alpha": 0.43,
+                "opacityToken": "opacity.43"
+              }
+            },
+            "strong": {
+              "usage": "오류·위험 상태 요소의 더 강한 테두리 선",
+              "usageSource": "derived",
+              "light": {
+                "value": "#FF424285",
+                "ref": "atomic.red.50",
+                "alpha": 0.52,
+                "opacityToken": "opacity.52"
+              },
+              "dark": {
+                "value": "#FF636385",
+                "ref": "atomic.red.60",
+                "alpha": 0.52,
+                "opacityToken": "opacity.52"
+              }
+            }
+          },
+          "cautionary": {
+            "normal": {
+              "usage": "주의 상태 요소의 테두리 선",
+              "usageSource": "derived",
+              "light": {
+                "value": "#FF92006E",
+                "ref": "atomic.orange.50",
+                "alpha": 0.43,
+                "opacityToken": "opacity.43"
+              },
+              "dark": {
+                "value": "#FFA9386E",
+                "ref": "atomic.orange.60",
+                "alpha": 0.43,
+                "opacityToken": "opacity.43"
+              }
+            }
+          },
+          "positive": {
+            "normal": {
+              "usage": "성공·긍정 상태 요소의 테두리 선",
+              "usageSource": "derived",
+              "light": {
+                "value": "#00BF406E",
+                "ref": "atomic.green.50",
+                "alpha": 0.43,
+                "opacityToken": "opacity.43"
+              },
+              "dark": {
+                "value": "#1ED45A6E",
+                "ref": "atomic.green.60",
+                "alpha": 0.43,
+                "opacityToken": "opacity.43"
+              }
+            }
+          }
+        }
+      },
+      "status": {
+        "positive": {
+          "usage": "성공·긍정(Positive) 상태를 표현하는 색",
+          "usageSource": "docs",
+          "light": {
+            "value": "#00BF40",
+            "ref": "atomic.green.50"
+          },
+          "dark": {
+            "value": "#1ED45A",
+            "ref": "atomic.green.60"
+          }
+        },
+        "cautionary": {
+          "usage": "주의(Cautionary) 상태를 표현하는 색",
+          "usageSource": "docs",
+          "light": {
+            "value": "#FF9200",
+            "ref": "atomic.orange.50"
+          },
+          "dark": {
+            "value": "#FFA938",
+            "ref": "atomic.orange.60"
+          }
+        },
+        "negative": {
+          "usage": "오류·위험(Negative) 상태를 표현하는 색",
+          "usageSource": "docs",
+          "light": {
+            "value": "#FF4242",
+            "ref": "atomic.red.50"
+          },
+          "dark": {
+            "value": "#FF6363",
+            "ref": "atomic.red.60"
+          }
+        }
+      },
+      "accent": {
+        "background": {
+          "redOrange": {
+            "usage": "배경 등 뒤쪽 요소에 쓰는 redOrange 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#FF5E00",
+              "ref": "atomic.redOrange.50"
+            },
+            "dark": {
+              "value": "#FF7B2E",
+              "ref": "atomic.redOrange.60"
+            }
+          },
+          "lime": {
+            "usage": "배경 등 뒤쪽 요소에 쓰는 lime 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#58CF04",
+              "ref": "atomic.lime.50"
+            },
+            "dark": {
+              "value": "#6BE016",
+              "ref": "atomic.lime.60"
+            }
+          },
+          "cyan": {
+            "usage": "배경 등 뒤쪽 요소에 쓰는 cyan 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#00BDDE",
+              "ref": "atomic.cyan.50"
+            },
+            "dark": {
+              "value": "#28D0ED",
+              "ref": "atomic.cyan.60"
+            }
+          },
+          "lightBlue": {
+            "usage": "배경 등 뒤쪽 요소에 쓰는 lightBlue 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#00AEFF",
+              "ref": "atomic.lightBlue.50"
+            },
+            "dark": {
+              "value": "#3DC2FF",
+              "ref": "atomic.lightBlue.60"
+            }
+          },
+          "violet": {
+            "usage": "배경 등 뒤쪽 요소에 쓰는 violet 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#6541F2",
+              "ref": "atomic.violet.50"
+            },
+            "dark": {
+              "value": "#7D5EF7",
+              "ref": "atomic.violet.60"
+            }
+          },
+          "purple": {
+            "usage": "배경 등 뒤쪽 요소에 쓰는 purple 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#CB59FF",
+              "ref": "atomic.purple.50"
+            },
+            "dark": {
+              "value": "#D478FF",
+              "ref": "atomic.purple.60"
+            }
+          },
+          "pink": {
+            "usage": "배경 등 뒤쪽 요소에 쓰는 pink 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#F553DA",
+              "ref": "atomic.pink.50"
+            },
+            "dark": {
+              "value": "#FA73E3",
+              "ref": "atomic.pink.60"
+            }
+          }
+        },
+        "foreground": {
+          "red": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 red 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#E52222",
+              "ref": "atomic.red.40"
+            },
+            "dark": {
+              "value": "#FF6363",
+              "ref": "atomic.red.60"
+            }
+          },
+          "redOrange": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 redOrange 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#F55A00",
+              "ref": "atomic.redOrange.48"
+            },
+            "dark": {
+              "value": "#FF7B2E",
+              "ref": "atomic.redOrange.60"
+            }
+          },
+          "orange": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 orange 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#D17600",
+              "ref": "atomic.orange.39"
+            },
+            "dark": {
+              "value": "#FF9200",
+              "ref": "atomic.orange.50"
+            }
+          },
+          "lime": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 lime 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#429E00",
+              "ref": "atomic.lime.37"
+            },
+            "dark": {
+              "value": "#58CF04",
+              "ref": "atomic.lime.50"
+            }
+          },
+          "green": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 green 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#009632",
+              "ref": "atomic.green.40"
+            },
+            "dark": {
+              "value": "#1ED45A",
+              "ref": "atomic.green.60"
+            }
+          },
+          "cyan": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 cyan 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#0098B2",
+              "ref": "atomic.cyan.40"
+            },
+            "dark": {
+              "value": "#00BDDE",
+              "ref": "atomic.cyan.50"
+            }
+          },
+          "lightBlue": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 lightBlue 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#008DCF",
+              "ref": "atomic.lightBlue.40"
+            },
+            "dark": {
+              "value": "#00AEFF",
+              "ref": "atomic.lightBlue.50"
+            }
+          },
+          "blue": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 blue 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#005EEB",
+              "ref": "atomic.blue.45"
+            },
+            "dark": {
+              "value": "#4F95FF",
+              "ref": "atomic.blue.65"
+            }
+          },
+          "violet": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 violet 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#5B37ED",
+              "ref": "atomic.violet.45"
+            },
+            "dark": {
+              "value": "#9E86FC",
+              "ref": "atomic.violet.70"
+            }
+          },
+          "purple": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 purple 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#AD36E3",
+              "ref": "atomic.purple.40"
+            },
+            "dark": {
+              "value": "#D478FF",
+              "ref": "atomic.purple.60"
+            }
+          },
+          "pink": {
+            "usage": "앞쪽 요소(텍스트·아이콘 등)에 쓰는 pink 강조 색 – 시각적 대비 유지",
+            "usageSource": "docs",
+            "light": {
+              "value": "#E846CD",
+              "ref": "atomic.pink.46"
+            },
+            "dark": {
+              "value": "#FA73E3",
+              "ref": "atomic.pink.60"
+            }
+          }
+        }
+      },
+      "inverse": {
+        "primary": {
+          "usage": "테마 대비가 반대인 요소(Tooltip 등) 안의 Primary 강조 색",
+          "usageSource": "docs",
+          "light": {
+            "value": "#3385FF",
+            "ref": "atomic.blue.60"
+          },
+          "dark": {
+            "value": "#0066FF",
+            "ref": "atomic.blue.50"
+          }
+        },
+        "background": {
+          "usage": "테마 대비가 반대인 요소(Tooltip 등)의 배경",
+          "usageSource": "docs",
+          "light": {
+            "value": "#1B1C1E",
+            "ref": "atomic.coolNeutral.15"
+          },
+          "dark": {
+            "value": "#ffffff",
+            "ref": "atomic.common.100"
+          }
+        },
+        "label": {
+          "usage": "테마 대비가 반대인 요소(Tooltip 등)의 텍스트",
+          "usageSource": "docs",
+          "light": {
+            "value": "#F7F7F8",
+            "ref": "atomic.coolNeutral.99"
+          },
+          "dark": {
+            "value": "#171719",
+            "ref": "atomic.coolNeutral.10"
+          }
+        }
+      },
+      "fill": {
+        "normal": {
+          "usage": "패널 등 요소 배경을 채우는 반투명 색 – 기본",
+          "usageSource": "docs",
+          "light": {
+            "value": "#70737C14",
+            "ref": "atomic.coolNeutral.50",
+            "alpha": 0.08,
+            "opacityToken": "opacity.8"
+          },
+          "dark": {
+            "value": "#70737C38",
+            "ref": "atomic.coolNeutral.50",
+            "alpha": 0.22,
+            "opacityToken": "opacity.22"
+          }
+        },
+        "strong": {
+          "usage": "패널 등 요소 배경을 채우는 반투명 색 – 더 진함",
+          "usageSource": "docs",
+          "light": {
+            "value": "#70737C29",
+            "ref": "atomic.coolNeutral.50",
+            "alpha": 0.16,
+            "opacityToken": "opacity.16"
+          },
+          "dark": {
+            "value": "#70737C47",
+            "ref": "atomic.coolNeutral.50",
+            "alpha": 0.28,
+            "opacityToken": "opacity.28"
+          }
+        },
+        "alternative": {
+          "usage": "패널 등 요소 배경을 채우는 반투명 색 – 더 옅음",
+          "usageSource": "docs",
+          "light": {
+            "value": "#70737C0D",
+            "ref": "atomic.coolNeutral.50",
+            "alpha": 0.05,
+            "opacityToken": "opacity.5"
+          },
+          "dark": {
+            "value": "#70737C1F",
+            "ref": "atomic.coolNeutral.50",
+            "alpha": 0.12,
+            "opacityToken": "opacity.12"
+          }
+        }
+      },
+      "material": {
+        "dimmer": {
+          "usage": "모달 등 층위가 생길 때 뒤 화면을 어둡게 덮는 딤 레이어",
+          "usageSource": "docs",
+          "light": {
+            "value": "#17171985",
+            "ref": "atomic.coolNeutral.10",
+            "alpha": 0.52,
+            "opacityToken": "opacity.52"
+          },
+          "dark": {
+            "value": "#171719BD",
+            "ref": "atomic.coolNeutral.10",
+            "alpha": 0.74,
+            "opacityToken": "opacity.74"
+          }
+        }
+      }
+    }
+  },
+  "shadow": {
+    "normal": {
+      "xsmall": {
+        "usage": "일반 box-shadow – 요소를 배경에서 띄울 때 (크기가 클수록 높은 층위) – xsmall",
+        "usageSource": "derived",
+        "cssProperty": "box-shadow",
+        "light": "0px 1px 2px -1px #1717171A",
+        "dark": "0px 1px 2px -1px #1717171A"
+      },
+      "small": {
+        "usage": "일반 box-shadow – 요소를 배경에서 띄울 때 (크기가 클수록 높은 층위) – small",
+        "usageSource": "derived",
+        "cssProperty": "box-shadow",
+        "light": "0px 2px 4px -2px #1717170F, 0px 4px 6px -1px #1717170F",
+        "dark": "0px 2px 4px -2px #1717170F, 0px 4px 6px -1px #1717170F"
+      },
+      "medium": {
+        "usage": "일반 box-shadow – 요소를 배경에서 띄울 때 (크기가 클수록 높은 층위) – medium",
+        "usageSource": "derived",
+        "cssProperty": "box-shadow",
+        "light": "0px 4px 6px -2px #17171712, 0px 10px 15px -3px #17171712",
+        "dark": "0px 4px 6px -2px #17171712, 0px 10px 15px -3px #17171712"
+      },
+      "large": {
+        "usage": "일반 box-shadow – 요소를 배경에서 띄울 때 (크기가 클수록 높은 층위) – large",
+        "usageSource": "derived",
+        "cssProperty": "box-shadow",
+        "light": "0px 6px 10px -4px #17171714, 0px 16px 24px -6px #17171714",
+        "dark": "0px 6px 10px -4px #17171714, 0px 16px 24px -6px #17171714"
+      },
+      "xlarge": {
+        "usage": "일반 box-shadow – 요소를 배경에서 띄울 때 (크기가 클수록 높은 층위) – xlarge",
+        "usageSource": "derived",
+        "cssProperty": "box-shadow",
+        "light": "0px 10px 15px -5px #1717171A, 0px 24px 38px -10px #1717171F",
+        "dark": "0px 10px 15px -5px #1717171A, 0px 24px 38px -10px #1717171F"
+      }
+    },
+    "drop": {
+      "xsmall": {
+        "usage": "filter: drop-shadow() 용 – 투명 영역이 있는 아이콘·이미지 모양대로 그림자 – xsmall",
+        "usageSource": "derived",
+        "cssProperty": "filter",
+        "light": "drop-shadow(0px 1px 0.5px #1717170D)",
+        "dark": "drop-shadow(0px 1px 0.5px #1717170D)"
+      },
+      "small": {
+        "usage": "filter: drop-shadow() 용 – 투명 영역이 있는 아이콘·이미지 모양대로 그림자 – small",
+        "usageSource": "derived",
+        "cssProperty": "filter",
+        "light": "drop-shadow(0px 2px 1px #17171708) drop-shadow(0px 4px 2.5px #17171708)",
+        "dark": "drop-shadow(0px 2px 1px #17171708) drop-shadow(0px 4px 2.5px #17171708)"
+      },
+      "medium": {
+        "usage": "filter: drop-shadow() 용 – 투명 영역이 있는 아이콘·이미지 모양대로 그림자 – medium",
+        "usageSource": "derived",
+        "cssProperty": "filter",
+        "light": "drop-shadow(0px 4px 2px #17171709) drop-shadow(0px 10px 6px #17171709)",
+        "dark": "drop-shadow(0px 4px 2px #17171709) drop-shadow(0px 10px 6px #17171709)"
+      },
+      "large": {
+        "usage": "filter: drop-shadow() 용 – 투명 영역이 있는 아이콘·이미지 모양대로 그림자 – large",
+        "usageSource": "derived",
+        "cssProperty": "filter",
+        "light": "drop-shadow(0px 6px 3px #1717170A) drop-shadow(0px 16px 9px #17171708)",
+        "dark": "drop-shadow(0px 6px 3px #1717170A) drop-shadow(0px 16px 9px #17171708)"
+      },
+      "xlarge": {
+        "usage": "filter: drop-shadow() 용 – 투명 영역이 있는 아이콘·이미지 모양대로 그림자 – xlarge",
+        "usageSource": "derived",
+        "cssProperty": "filter",
+        "light": "drop-shadow(0px 10px 5px #1717170D) drop-shadow(0px 24px 14px #1717170F)",
+        "dark": "drop-shadow(0px 10px 5px #1717170D) drop-shadow(0px 24px 14px #1717170F)"
+      }
+    },
+    "spread": {
+      "small": {
+        "usage": "넓게 퍼지는 box-shadow – 큰 패널·모달 등 넓은 면적의 층위 표현 – small",
+        "usageSource": "derived",
+        "cssProperty": "box-shadow",
+        "light": "0px 0px 60px 0px #1717171A",
+        "dark": "0px 0px 60px 0px #1717171A"
+      },
+      "medium": {
+        "usage": "넓게 퍼지는 box-shadow – 큰 패널·모달 등 넓은 면적의 층위 표현 – medium",
+        "usageSource": "derived",
+        "cssProperty": "box-shadow",
+        "light": "0px 15px 75px 0px #17171729",
+        "dark": "0px 15px 75px 0px #17171729"
+      }
+    }
+  },
+  "typography": {
+    "display1": {
+      "fontSize": "3.5rem",
+      "fontSizePx": "56px",
+      "lineHeight": "4.5rem",
+      "lineHeightPx": "72px",
+      "letterSpacing": "-0.0319em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 700
+      }
+    },
+    "display2": {
+      "fontSize": "2.5rem",
+      "fontSizePx": "40px",
+      "lineHeight": "3.25rem",
+      "lineHeightPx": "52px",
+      "letterSpacing": "-0.0282em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 700
+      }
+    },
+    "display3": {
+      "fontSize": "2.25rem",
+      "fontSizePx": "36px",
+      "lineHeight": "3rem",
+      "lineHeightPx": "48px",
+      "letterSpacing": "-0.027em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 700
+      }
+    },
+    "title1": {
+      "fontSize": "2rem",
+      "fontSizePx": "32px",
+      "lineHeight": "2.75rem",
+      "lineHeightPx": "44px",
+      "letterSpacing": "-0.0253em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 700
+      }
+    },
+    "title2": {
+      "fontSize": "1.75rem",
+      "fontSizePx": "28px",
+      "lineHeight": "2.375rem",
+      "lineHeightPx": "38px",
+      "letterSpacing": "-0.0236em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 700
+      }
+    },
+    "title3": {
+      "fontSize": "1.5rem",
+      "fontSizePx": "24px",
+      "lineHeight": "2rem",
+      "lineHeightPx": "32px",
+      "letterSpacing": "-0.023em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 700
+      }
+    },
+    "heading1": {
+      "fontSize": "1.375rem",
+      "fontSizePx": "22px",
+      "lineHeight": "1.875rem",
+      "lineHeightPx": "30px",
+      "letterSpacing": "-0.0194em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "heading2": {
+      "fontSize": "1.25rem",
+      "fontSizePx": "20px",
+      "lineHeight": "1.75rem",
+      "lineHeightPx": "28px",
+      "letterSpacing": "-0.012em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "headline1": {
+      "fontSize": "1.125rem",
+      "fontSizePx": "18px",
+      "lineHeight": "1.625rem",
+      "lineHeightPx": "26px",
+      "letterSpacing": "-0.002em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "headline2": {
+      "fontSize": "1.0625rem",
+      "fontSizePx": "17px",
+      "lineHeight": "1.5rem",
+      "lineHeightPx": "24px",
+      "letterSpacing": "0em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "body1": {
+      "fontSize": "1rem",
+      "fontSizePx": "16px",
+      "lineHeight": "1.5rem",
+      "lineHeightPx": "24px",
+      "letterSpacing": "0.0057em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "body1-reading": {
+      "fontSize": "1rem",
+      "fontSizePx": "16px",
+      "lineHeight": "1.625rem",
+      "lineHeightPx": "26px",
+      "letterSpacing": "0.0057em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "body2": {
+      "fontSize": "0.9375rem",
+      "fontSizePx": "15px",
+      "lineHeight": "1.375rem",
+      "lineHeightPx": "22px",
+      "letterSpacing": "0.0096em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "body2-reading": {
+      "fontSize": "0.9375rem",
+      "fontSizePx": "15px",
+      "lineHeight": "1.5rem",
+      "lineHeightPx": "24px",
+      "letterSpacing": "0.0096em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "label1": {
+      "fontSize": "0.875rem",
+      "fontSizePx": "14px",
+      "lineHeight": "1.25rem",
+      "lineHeightPx": "20px",
+      "letterSpacing": "0.0145em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "label1-reading": {
+      "fontSize": "0.875rem",
+      "fontSizePx": "14px",
+      "lineHeight": "1.375rem",
+      "lineHeightPx": "22px",
+      "letterSpacing": "0.0145em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "label2": {
+      "fontSize": "0.8125rem",
+      "fontSizePx": "13px",
+      "lineHeight": "1.125rem",
+      "lineHeightPx": "18px",
+      "letterSpacing": "0.0194em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "caption1": {
+      "fontSize": "0.75rem",
+      "fontSizePx": "12px",
+      "lineHeight": "1rem",
+      "lineHeightPx": "16px",
+      "letterSpacing": "0.0252em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    },
+    "caption2": {
+      "fontSize": "0.6875rem",
+      "fontSizePx": "11px",
+      "lineHeight": "0.875rem",
+      "lineHeightPx": "14px",
+      "letterSpacing": "0.0311em",
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500,
+        "bold": 600
+      }
+    }
+  },
+  "spacing": {
+    "0": "0px",
+    "1": "1px",
+    "2": "2px",
+    "4": "4px",
+    "6": "6px",
+    "8": "8px",
+    "10": "10px",
+    "12": "12px",
+    "14": "14px",
+    "16": "16px",
+    "20": "20px",
+    "24": "24px",
+    "32": "32px",
+    "40": "40px",
+    "48": "48px",
+    "56": "56px",
+    "64": "64px",
+    "72": "72px",
+    "80": "80px",
+    "0.5": "0.5px"
+  },
+  "opacity": {
+    "0": 0,
+    "5": 0.05,
+    "8": 0.08,
+    "12": 0.12,
+    "16": 0.16,
+    "22": 0.22,
+    "28": 0.28,
+    "35": 0.35,
+    "43": 0.43,
+    "52": 0.52,
+    "61": 0.61,
+    "74": 0.74,
+    "88": 0.88,
+    "97": 0.97,
+    "100": 1
+  },
+  "breakpoint": {
+    "xl": "1600px",
+    "lg": "1200px",
+    "md": "992px",
+    "sm": "768px",
+    "xs": "0px"
+  },
+  "zIndex": {
+    "modal": 1300
+  },
+  "radius": {
+    "0": {
+      "value": "0px",
+      "usage": "Montage에서 실제 사용: icon-button, modal, page-counter, segmented-control, text-field, thumbnail",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/icon-button/style.ts",
+          "line": 273
+        },
+        {
+          "file": "packages/wds/src/components/icon-button/style.ts",
+          "line": 279
+        },
+        {
+          "file": "packages/wds/src/components/modal/style.ts",
+          "line": 376
+        },
+        {
+          "file": "packages/wds/src/components/page-counter/style.ts",
+          "line": 53
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 146
+        },
+        {
+          "file": "packages/wds/src/components/text-field/style.ts",
+          "line": 57
+        },
+        {
+          "file": "packages/wds/src/components/text-field/style.ts",
+          "line": 58
+        },
+        {
+          "file": "packages/wds/src/components/text-field/style.ts",
+          "line": 330
+        },
+        {
+          "file": "packages/wds/src/components/text-field/style.ts",
+          "line": 331
+        },
+        {
+          "file": "packages/wds/src/components/thumbnail/style.ts",
+          "line": 92
+        }
+      ]
+    },
+    "3": {
+      "value": "3px",
+      "usage": "Montage에서 실제 사용: skeleton",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/skeleton/style.ts",
+          "line": 120
+        }
+      ]
+    },
+    "5": {
+      "value": "5px",
+      "usage": "Montage에서 실제 사용: checkbox",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/checkbox/style.ts",
+          "line": 35
+        }
+      ]
+    },
+    "6": {
+      "value": "6px",
+      "usage": "Montage에서 실제 사용: category, chip, filter-button, segmented-control, text-button, tooltip",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/category/style.ts",
+          "line": 295
+        },
+        {
+          "file": "packages/wds/src/components/chip/style.ts",
+          "line": 57
+        },
+        {
+          "file": "packages/wds/src/components/filter-button/style.ts",
+          "line": 48
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 94
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 241
+        },
+        {
+          "file": "packages/wds/src/components/text-button/style.ts",
+          "line": 117
+        },
+        {
+          "file": "packages/wds/src/components/text-button/style.ts",
+          "line": 140
+        },
+        {
+          "file": "packages/wds/src/components/tooltip/style.ts",
+          "line": 60
+        }
+      ]
+    },
+    "8": {
+      "value": "8px",
+      "usage": "Montage에서 실제 사용: button, category, chip, content-badge, date-range-calendar, filter-button, pagination, segmented-control, time-view, tooltip",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/button/style.ts",
+          "line": 131
+        },
+        {
+          "file": "packages/wds/src/components/category/style.ts",
+          "line": 309
+        },
+        {
+          "file": "packages/wds/src/components/category/style.ts",
+          "line": 323
+        },
+        {
+          "file": "packages/wds/src/components/chip/style.ts",
+          "line": 71
+        },
+        {
+          "file": "packages/wds/src/components/chip/style.ts",
+          "line": 85
+        },
+        {
+          "file": "packages/wds/src/components/content-badge/style.ts",
+          "line": 48
+        },
+        {
+          "file": "packages/wds/src/components/content-badge/style.ts",
+          "line": 59
+        },
+        {
+          "file": "packages/wds/src/components/date-range-calendar/style.ts",
+          "line": 123
+        },
+        {
+          "file": "packages/wds/src/components/filter-button/style.ts",
+          "line": 70
+        },
+        {
+          "file": "packages/wds/src/components/pagination/style.ts",
+          "line": 58
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 80
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 86
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 217
+        },
+        {
+          "file": "packages/wds/src/components/time-view/style.ts",
+          "line": 55
+        },
+        {
+          "file": "packages/wds/src/components/time-view/style.ts",
+          "line": 56
+        },
+        {
+          "file": "packages/wds/src/components/time-view/style.ts",
+          "line": 60
+        },
+        {
+          "file": "packages/wds/src/components/time-view/style.ts",
+          "line": 61
+        },
+        {
+          "file": "packages/wds/src/components/time-view/style.ts",
+          "line": 65
+        },
+        {
+          "file": "packages/wds/src/components/tooltip/style.ts",
+          "line": 98
+        }
+      ]
+    },
+    "10": {
+      "value": "10px",
+      "usage": "Montage에서 실제 사용: button, category, chip, content-badge, filter-button, scroll-area, section-header, segmented-control",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/button/style.ts",
+          "line": 102
+        },
+        {
+          "file": "packages/wds/src/components/category/style.ts",
+          "line": 338
+        },
+        {
+          "file": "packages/wds/src/components/chip/style.ts",
+          "line": 100
+        },
+        {
+          "file": "packages/wds/src/components/content-badge/style.ts",
+          "line": 37
+        },
+        {
+          "file": "packages/wds/src/components/filter-button/style.ts",
+          "line": 92
+        },
+        {
+          "file": "packages/wds/src/components/filter-button/style.ts",
+          "line": 114
+        },
+        {
+          "file": "packages/wds/src/components/scroll-area/style.ts",
+          "line": 112
+        },
+        {
+          "file": "packages/wds/src/components/section-header/style.ts",
+          "line": 122
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 66
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 72
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 193
+        }
+      ]
+    },
+    "12": {
+      "value": "12px",
+      "usage": "Montage에서 실제 사용: alert, button, card, date-picker, date-range-picker, list, modal, popover, search-field, section-message, segmented-control, select, snackbar, table, text-area, text-field, thumbnail, time-picker, toast",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/alert/style.ts",
+          "line": 36
+        },
+        {
+          "file": "packages/wds/src/components/button/style.ts",
+          "line": 73
+        },
+        {
+          "file": "packages/wds/src/components/card/style.ts",
+          "line": 230
+        },
+        {
+          "file": "packages/wds/src/components/date-picker/style.ts",
+          "line": 8
+        },
+        {
+          "file": "packages/wds/src/components/date-range-picker/style.ts",
+          "line": 8
+        },
+        {
+          "file": "packages/wds/src/components/list/style.ts",
+          "line": 208
+        },
+        {
+          "file": "packages/wds/src/components/list/style.ts",
+          "line": 254
+        },
+        {
+          "file": "packages/wds/src/components/modal/style.ts",
+          "line": 219
+        },
+        {
+          "file": "packages/wds/src/components/modal/style.ts",
+          "line": 257
+        },
+        {
+          "file": "packages/wds/src/components/popover/style.ts",
+          "line": 32
+        },
+        {
+          "file": "packages/wds/src/components/search-field/style.ts",
+          "line": 28
+        },
+        {
+          "file": "packages/wds/src/components/section-message/style.ts",
+          "line": 10
+        },
+        {
+          "file": "packages/wds/src/components/segmented-control/style.ts",
+          "line": 58
+        },
+        {
+          "file": "packages/wds/src/components/select/style.ts",
+          "line": 24
+        },
+        {
+          "file": "packages/wds/src/components/snackbar/style.ts",
+          "line": 44
+        },
+        {
+          "file": "packages/wds/src/components/table/style.ts",
+          "line": 21
+        },
+        {
+          "file": "packages/wds/src/components/text-area/style.ts",
+          "line": 27
+        },
+        {
+          "file": "packages/wds/src/components/text-field/style.ts",
+          "line": 35
+        },
+        {
+          "file": "packages/wds/src/components/thumbnail/style.ts",
+          "line": 88
+        },
+        {
+          "file": "packages/wds/src/components/time-picker/style.ts",
+          "line": 8
+        },
+        {
+          "file": "packages/wds/src/components/toast/style.ts",
+          "line": 39
+        }
+      ]
+    },
+    "16": {
+      "value": "16px",
+      "usage": "Montage에서 실제 사용: autocomplete, menu, popover",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/autocomplete/style.ts",
+          "line": 8
+        },
+        {
+          "file": "packages/wds/src/components/autocomplete/style.ts",
+          "line": 14
+        },
+        {
+          "file": "packages/wds/src/components/menu/style.ts",
+          "line": 10
+        },
+        {
+          "file": "packages/wds/src/components/popover/style.ts",
+          "line": 14
+        }
+      ]
+    },
+    "20": {
+      "value": "20px",
+      "usage": "Montage에서 실제 사용: modal",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/modal/style.ts",
+          "line": 295
+        },
+        {
+          "file": "packages/wds/src/components/modal/style.ts",
+          "line": 333
+        }
+      ]
+    },
+    "75": {
+      "value": "75px",
+      "usage": "Montage에서 실제 사용: switch",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/switch/style.ts",
+          "line": 117
+        }
+      ]
+    },
+    "100": {
+      "value": "100px",
+      "usage": "Montage에서 실제 사용: switch",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/switch/style.ts",
+          "line": 108
+        }
+      ]
+    },
+    "999": {
+      "value": "999px",
+      "usage": "Montage에서 실제 사용: progress-step-indicator, section-message, toast",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/progress-step-indicator/style.ts",
+          "line": 46
+        },
+        {
+          "file": "packages/wds/src/components/progress-step-indicator/style.ts",
+          "line": 47
+        },
+        {
+          "file": "packages/wds/src/components/progress-step-indicator/style.ts",
+          "line": 51
+        },
+        {
+          "file": "packages/wds/src/components/progress-step-indicator/style.ts",
+          "line": 52
+        },
+        {
+          "file": "packages/wds/src/components/section-message/style.ts",
+          "line": 75
+        },
+        {
+          "file": "packages/wds/src/components/toast/style.ts",
+          "line": 92
+        }
+      ]
+    },
+    "1000": {
+      "value": "1000px",
+      "usage": "Montage에서 실제 사용: modal, page-counter, pagination-dots, play-badge, slider, switch",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/modal/style.ts",
+          "line": 534
+        },
+        {
+          "file": "packages/wds/src/components/page-counter/style.ts",
+          "line": 22
+        },
+        {
+          "file": "packages/wds/src/components/pagination-dots/style.ts",
+          "line": 157
+        },
+        {
+          "file": "packages/wds/src/components/play-badge/style.ts",
+          "line": 13
+        },
+        {
+          "file": "packages/wds/src/components/slider/style.ts",
+          "line": 10
+        },
+        {
+          "file": "packages/wds/src/components/switch/style.ts",
+          "line": 37
+        }
+      ]
+    },
+    "9999": {
+      "value": "9999px",
+      "usage": "Montage에서 실제 사용: avatar, check-mark, checkbox, icon-button, progress-tracker, push-badge, radio, round-checkbox, slider, stepper, toggle-icon",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/avatar/style.ts",
+          "line": 83
+        },
+        {
+          "file": "packages/wds/src/components/avatar/style.ts",
+          "line": 87
+        },
+        {
+          "file": "packages/wds/src/components/check-mark/style.ts",
+          "line": 17
+        },
+        {
+          "file": "packages/wds/src/components/check-mark/style.ts",
+          "line": 31
+        },
+        {
+          "file": "packages/wds/src/components/checkbox/style.ts",
+          "line": 43
+        },
+        {
+          "file": "packages/wds/src/components/icon-button/style.ts",
+          "line": 25
+        },
+        {
+          "file": "packages/wds/src/components/progress-tracker/style.ts",
+          "line": 88
+        },
+        {
+          "file": "packages/wds/src/components/push-badge/style.ts",
+          "line": 186
+        },
+        {
+          "file": "packages/wds/src/components/radio/style.ts",
+          "line": 32
+        },
+        {
+          "file": "packages/wds/src/components/round-checkbox/style.ts",
+          "line": 11
+        },
+        {
+          "file": "packages/wds/src/components/round-checkbox/style.ts",
+          "line": 14
+        },
+        {
+          "file": "packages/wds/src/components/slider/style.ts",
+          "line": 58
+        },
+        {
+          "file": "packages/wds/src/components/stepper/style.ts",
+          "line": 28
+        },
+        {
+          "file": "packages/wds/src/components/toggle-icon/style.ts",
+          "line": 15
+        }
+      ]
+    },
+    "10000": {
+      "value": "10000px",
+      "usage": "Montage에서 실제 사용: date-calendar",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/date-calendar/style.ts",
+          "line": 67
+        }
+      ]
+    },
+    "50pct": {
+      "value": "50%",
+      "usage": "Montage에서 실제 사용: skeleton",
+      "sources": [
+        {
+          "file": "packages/wds/src/components/skeleton/style.ts",
+          "line": 142
+        }
+      ]
+    }
+  }
+}

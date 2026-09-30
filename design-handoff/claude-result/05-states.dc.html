@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>상태 모음</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./menu-ui.css">
+<link rel="stylesheet" href="./board.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div class="board" style="width: 3228px; height: 8200px">
+
+  <div class="boardHead">
+    <span class="label1 bold boardKicker">5 · 상태 모음</span>
+    <h1 class="title3 bold">기다림, 비어 있음, 실패, 성공을 각각 알아보고 스스로 회복할 수 있게</h1>
+    <p class="body2-reading muted">12개 상태를 데스크톱(본문 1040px 조각)과 모바일(390px)로 나란히 놓았습니다. 왼쪽 열은 목록·상세를 “읽는” 상태, 오른쪽 열은 “저장·삭제하는” 상태입니다. 모든 상태에 글자 설명이 있고(색만으로 구분하지 않음), 실패에는 반드시 다음 행동 버튼이 있습니다. 화면 속 이름·가격은 디자인 샘플이며 서버 연동 결과가 아닙니다.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, 1510px); gap: var(--space-80); align-items: start">
+
+    <!-- ============ A열: 조회 상태 ============ -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-32)">
+      <div class="sectionHead"><h2 class="heading1 bold">A · 목록과 상세를 읽는 상태</h2><span class="label1 muted">GET 요청 대기·실패·결과 없음</span></div>
+
+      <!-- 1 목록 로딩 -->
+      <div class="stateBlock">
+        <div class="stateHead"><span class="stateNo label1 bold">1</span><h3 class="heading2 bold">목록 로딩</h3></div>
+        <p class="body2-reading muted" style="max-width: 1100px">제목 줄은 그대로 두고 결과 줄에 진행 문구(role=status)와 회전 아이콘을, 카드 자리에 같은 모양의 스켈레톤을 둡니다. 스켈레톤은 aria-hidden, 목록은 aria-busy. 깜빡임은 --opacity-52, 움직임 줄이기 설정이면 멈춥니다.</p>
+        <div class="frameRow">
+          <sc-for list="{{views}}" as="v" hint-placeholder-count="2">
+            <div class="frameItem">
+              <div class="frameLabel"><span class="label1 bold">{{v.label}}</span><span class="chip label2 medium">{{v.tag}}</span></div>
+              <div class="frame {{v.frameClass}}" data-theme="{{v.theme}}">
+                <main class="siteMain">
+                  <div class="page">
+                    <div class="pageHeader">
+                      <div class="pageHeaderText"><h1 class="pageTitle title3 bold">메뉴 목록</h1></div>
+                      <div class="pageActions"><a class="btn btnPrimary label1 bold" href="04-menu-form.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>메뉴 등록</a></div>
+                    </div>
+                    <div class="resultBar">
+                      <p class="resultText label1" role="status"><svg class="icon spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg><span>메뉴 목록을 불러오는 중입니다…</span></p>
+                    </div>
+                    <ul class="menuGrid" aria-busy="true">
+                      <sc-for list="{{v.sk}}" as="k" hint-placeholder-count="3">
+                        <li>
+                          <div class="menuCard isSkeleton" aria-hidden="true">
+                            <div class="menuCardTop">
+                              <span class="skeleton" style="width: var(--space-56); height: var(--space-24)"></span>
+                              <span class="skeleton" style="width: var(--space-80); height: var(--space-24)"></span>
+                            </div>
+                            <span class="skeleton" style="width: 75%; height: var(--space-24)"></span>
+                            <span class="skeleton" style="width: 40%; height: var(--space-24)"></span>
+                            <div class="menuCardFoot"><span class="skeleton" style="width: var(--space-72); height: var(--space-16)"></span></div>
+                          </div>
+                        </li>
+                      </sc-for>
+                    </ul>
+                  </div>
+                </main>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- 2 검색 결과 없음 -->
+      <div class="stateBlock">
+        <div class="stateHead"><span class="stateNo label1 bold">2</span><h3 class="heading2 bold">검색 결과 없음</h3></div>
+        <p class="body2-reading muted" style="max-width: 1100px">서버에는 메뉴가 있는데 이름·카테고리·가격 조건에 맞는 것이 0개인 경우. 어떤 조건이었는지 문장으로 다시 알려 주고, “필터 초기화”를 결과 줄과 빈 상태 두 곳에 둡니다.</p>
+        <div class="frameRow">
+          <sc-for list="{{views}}" as="v" hint-placeholder-count="2">
+            <div class="frameItem">
+              <div class="frameLabel"><span class="label1 bold">{{v.label}}</span><span class="chip label2 medium">{{v.tag}}</span></div>
+              <div class="frame {{v.frameClass}}" data-theme="{{v.theme}}">
+                <main class="siteMain">
+                  <div class="page">
+                    <div class="pageHeader">
+                      <div class="pageHeaderText"><h1 class="pageTitle title3 bold">메뉴 목록</h1></div>
+                      <div class="pageActions"><a class="btn btnPrimary label1 bold" href="04-menu-form.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>메뉴 등록</a></div>
+                    </div>
+                    <form class="panel filterPanel" role="search" aria-label="메뉴 찾기">
+                      <div class="field field--search">
+                        <label class="fieldLabel label1 bold" for="s2q-{{v.key}}">이름 검색</label>
+                        <div class="control">
+                          <svg class="icon controlIcon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                          <input class="input hasIcon body1" id="s2q-{{v.key}}" type="search" value="라떼">
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label class="fieldLabel label1 bold" for="s2c-{{v.key}}">하위 카테고리</label>
+                        <div class="control">
+                          <select class="input select body1" id="s2c-{{v.key}}">
+                            <option>전체</option>
+                            <optgroup label="식사"><option>한식</option></optgroup>
+                            <optgroup label="음료"><option selected>커피</option></optgroup>
+                            <optgroup label="디저트"><option>베이커리</option></optgroup>
+                          </select>
+                          <svg class="icon selectChevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label class="fieldLabel label1 bold" for="s2p-{{v.key}}">기준 가격 초과</label>
+                        <div class="control">
+                          <input class="input hasSuffixLg body1" id="s2p-{{v.key}}" type="text" inputmode="numeric" value="6,000">
+                          <span class="suffix body1" aria-hidden="true">원 초과</span>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="resultBar">
+                      <p class="resultText label1" role="status" aria-live="polite">
+                        <span>조건에 맞는 메뉴 <strong>0</strong>개</span>
+                        <span class="muted">전체 23개 중</span>
+                        <button type="button" class="btn btnText label1 bold">필터 초기화</button>
+                      </p>
+                    </div>
+                    <div class="emptyState">
+                      <span class="emptyIcon"><svg class="icon iconLg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M9 9l4 4M13 9l-4 4"/></svg></span>
+                      <h2 class="emptyTitle headline1 bold">조건에 맞는 메뉴가 없습니다</h2>
+                      <p class="emptyText body2">이름 ‘라떼’ · 커피 · 6,000원 초과 조건으로 찾은 메뉴가 없어요. 검색어를 줄이거나 조건을 바꿔 보세요.</p>
+                      <button type="button" class="btn btnSecondary label1 bold">필터 초기화</button>
+                    </div>
+                  </div>
+                </main>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- 3 등록된 메뉴 없음 -->
+      <div class="stateBlock">
+        <div class="stateHead"><span class="stateNo label1 bold">3</span><h3 class="heading2 bold">등록된 메뉴 없음</h3></div>
+        <p class="body2-reading muted" style="max-width: 1100px">서버 전체가 0개인 처음 상태. 찾을 것이 없으므로 필터를 숨기고, 제목 줄의 등록 버튼도 숨겨 화면의 주요 버튼을 “메뉴 등록” 하나로 유지합니다.</p>
+        <div class="frameRow">
+          <sc-for list="{{views}}" as="v" hint-placeholder-count="2">
+            <div class="frameItem">
+              <div class="frameLabel"><span class="label1 bold">{{v.label}}</span><span class="chip label2 medium">{{v.tag}}</span></div>
+              <div class="frame {{v.frameClass}}" data-theme="{{v.theme}}">
+                <main class="siteMain">
+                  <div class="page">
+                    <div class="pageHeader"><div class="pageHeaderText"><h1 class="pageTitle title3 bold">메뉴 목록</h1></div></div>
+                    <div class="resultBar"><p class="resultText label1" role="status"><span>전체 <strong>0</strong>개</span></p></div>
+                    <div class="emptyState">
+                      <span class="emptyIcon"><svg class="icon iconLg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h4l1.5 3h5L16 13h4M4 13l2-7h12l2 7v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5z"/></svg></span>
+                      <h2 class="emptyTitle headline1 bold">등록된 메뉴가 없습니다</h2>
+                      <p class="emptyText body2">첫 메뉴를 등록하면 이곳에 카드로 표시됩니다.</p>
+                      <a class="btn btnPrimary label1 bold" href="04-menu-form.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>메뉴 등록</a>
+                    </div>
+                  </div>
+                </main>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- 4 서버 연결 오류 -->
+      <div class="stateBlock">
+        <div class="stateHead"><span class="stateNo label1 bold">4</span><h3 class="heading2 bold">서버 연결 오류와 다시 시도</h3></div>
+        <p class="body2-reading muted" style="max-width: 1100px">응답이 없거나 시간이 초과된 경우(role=alert). “다시 시도”는 같은 조건(URL의 page·q·category·price)으로 요청을 다시 보냅니다. 서버가 죽어 있으면 등록도 불가능하므로 제목 줄 버튼은 숨깁니다. 모바일은 다크 예시입니다.</p>
+        <div class="frameRow">
+          <sc-for list="{{viewsDark}}" as="v" hint-placeholder-count="2">
+            <div class="frameItem">
+              <div class="frameLabel"><span class="label1 bold">{{v.label}}</span><span class="chip label2 medium">{{v.tag}}</span></div>
+              <div class="frame {{v.frameClass}}" data-theme="{{v.theme}}">
+                <main class="siteMain">
+                  <div class="page">
+                    <div class="pageHeader"><div class="pageHeaderText"><h1 class="pageTitle title3 bold">메뉴 목록</h1></div></div>
+                    <div class="emptyState" role="alert">
+                      <span class="emptyIcon emptyIcon--negative"><svg class="icon iconLg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 4.2-2.6M10 5.1A15 15 0 0 1 22 8.8M5 12.9a10 10 0 0 1 5-2.7M14.5 10.4a10 10 0 0 1 4.5 2.5M12 20h.01"/></svg></span>
+                      <h2 class="emptyTitle headline1 bold">서버에 연결할 수 없습니다</h2>
+                      <p class="emptyText body2">메뉴 서버에서 응답이 없습니다. 네트워크 연결과 서버 상태를 확인한 뒤 다시 시도해 주세요.</p>
+                      <button type="button" class="btn btnPrimary label1 bold"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>다시 시도</button>
+                    </div>
+                  </div>
+                </main>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- 5 상세 404 -->
+      <div class="stateBlock">
+        <div class="stateHead"><span class="stateNo label1 bold">5</span><h3 class="heading2 bold">상세 404</h3></div>
+        <p class="body2-reading muted" style="max-width: 1100px">없거나 이미 삭제된 메뉴 번호(ERROR_CODE_00001, HTTP 404). 오류 코드는 화면에 노출하지 않고, 요청한 메뉴 번호와 돌아갈 길만 알려 줍니다. 목록으로 가는 길은 뒤로 가기 링크와 버튼 두 곳에 둡니다.</p>
+        <div class="frameRow">
+          <sc-for list="{{views}}" as="v" hint-placeholder-count="2">
+            <div class="frameItem">
+              <div class="frameLabel"><span class="label1 bold">{{v.label}}</span><span class="chip label2 medium">{{v.tag}}</span></div>
+              <div class="frame {{v.frameClass}}" data-theme="{{v.theme}}">
+                <main class="siteMain">
+                  <div class="page page--narrow">
+                    <div class="pageHeader">
+                      <div class="pageHeaderText">
+                        <a class="backLink label1 medium" href="02-menu-list.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>메뉴 목록으로</a>
+                        <h1 class="pageTitle title3 bold">메뉴 상세</h1>
+                      </div>
+                    </div>
+                    <div class="emptyState" role="alert">
+                      <span class="emptyIcon"><svg class="icon iconLg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M9 9l4 4M13 9l-4 4"/></svg></span>
+                      <h2 class="emptyTitle headline1 bold">메뉴를 찾을 수 없습니다</h2>
+                      <p class="emptyText body2">메뉴 번호 999에 해당하는 메뉴가 없거나 이미 삭제되었습니다. 목록에서 다시 찾아 주세요.</p>
+                      <a class="btn btnPrimary label1 bold" href="02-menu-list.dc.html">메뉴 목록으로</a>
+                    </div>
+                  </div>
+                </main>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ B열: 저장·삭제 상태 ============ -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-32)">
+      <div class="sectionHead"><h2 class="heading1 bold">B · 저장과 삭제하는 상태</h2><span class="label1 muted">입력 검증 · POST·PUT·DELETE 대기·실패·성공</span></div>
+
+      <!-- 6~8 폼 상태 -->
+      <sc-for list="{{formStates}}" as="s" hint-placeholder-count="3">
+        <div class="stateBlock">
+          <div class="stateHead"><span class="stateNo label1 bold">{{s.no}}</span><h3 class="heading2 bold">{{s.title}}</h3></div>
+          <p class="body2-reading muted" style="max-width: 1100px">{{s.desc}}</p>
+          <div class="frameRow">
+            <sc-for list="{{s.views}}" as="v" hint-placeholder-count="2">
+              <div class="frameItem">
+                <div class="frameLabel"><span class="label1 bold">{{v.label}}</span><span class="chip label2 medium">{{v.tag}}</span></div>
+                <div class="frame {{v.frameClass}}" data-theme="{{v.theme}}">
+                  <main class="siteMain">
+                    <div class="page page--narrow">
+                      <div class="pageHeader">
+                        <div class="pageHeaderText">
+                          <a class="backLink label1 medium" href="03-menu-detail.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>{{s.backText}}</a>
+                          <h1 class="pageTitle title3 bold">{{s.pageTitle}}</h1>
+                        </div>
+                      </div>
+
+                      <form class="panel formCard" novalidate aria-label="{{s.pageTitle}}">
+
+                        <sc-if value="{{s.failed}}" hint-placeholder-val="{{ false }}">
+                          <div class="alert alertNegative" role="alert">
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+                            <div class="alertBody"><span class="body2 bold">저장하지 못했습니다</span><span class="body2">서버에서 응답이 없어 변경 내용이 저장되지 않았습니다. 입력한 내용은 그대로 남아 있으니 다시 저장해 주세요.</span></div>
+                          </div>
+                        </sc-if>
+
+                        <div class="field">
+                          <label class="fieldLabel label1 bold" for="fn-{{s.no}}-{{v.key}}">메뉴 이름 <span class="fieldRequired label2 medium">필수</span></label>
+                          <div class="control"><input class="input body1 {{s.nameFocus}}" id="fn-{{s.no}}-{{v.key}}" type="text" value="{{s.name}}" placeholder="예: 소고기 비빔밥" aria-invalid="{{s.nameInvalid}}" aria-describedby="fnh-{{s.no}}-{{v.key}}" disabled="{{s.disabled}}"></div>
+                          <sc-if value="{{s.nameHelp}}" hint-placeholder-val="{{ true }}">
+                            <div class="fieldMeta label2" id="fnh-{{s.no}}-{{v.key}}"><span>100자 이내로 입력합니다.</span><span class="counter caption1">{{s.nameCount}} / 100</span></div>
+                          </sc-if>
+                          <sc-if value="{{s.nameInvalid}}" hint-placeholder-val="{{ false }}">
+                            <div class="fieldMeta label2" id="fnh-{{s.no}}-{{v.key}}"><div class="fieldError label2 medium" role="alert"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg><span>메뉴 이름을 입력해 주세요.</span></div><span class="counter caption1">{{s.nameCount}} / 100</span></div>
+                          </sc-if>
+                        </div>
+
+                        <div class="field">
+                          <label class="fieldLabel label1 bold" for="fp-{{s.no}}-{{v.key}}">가격 <span class="fieldRequired label2 medium">필수</span></label>
+                          <div class="control">
+                            <input class="input hasSuffix body1" id="fp-{{s.no}}-{{v.key}}" type="text" inputmode="numeric" value="{{s.price}}" placeholder="예: 11,000" aria-invalid="{{s.priceInvalid}}" aria-describedby="fph-{{s.no}}-{{v.key}}" disabled="{{s.disabled}}">
+                            <span class="suffix body1" aria-hidden="true">원</span>
+                          </div>
+                          <sc-if value="{{s.priceHelp}}" hint-placeholder-val="{{ true }}">
+                            <div class="fieldMeta label2" id="fph-{{s.no}}-{{v.key}}"><span>0 이상의 정수로 입력합니다.</span></div>
+                          </sc-if>
+                          <sc-if value="{{s.priceInvalid}}" hint-placeholder-val="{{ false }}">
+                            <div class="fieldMeta label2" id="fph-{{s.no}}-{{v.key}}"><div class="fieldError label2 medium" role="alert"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg><span>가격은 0 이상의 정수로 입력해 주세요.</span></div></div>
+                          </sc-if>
+                        </div>
+
+                        <div class="field">
+                          <label class="fieldLabel label1 bold" for="fc-{{s.no}}-{{v.key}}">하위 카테고리 <span class="fieldRequired label2 medium">필수</span></label>
+                          <div class="control">
+                            <sc-if value="{{s.catNone}}" hint-placeholder-val="{{ false }}">
+                              <select class="input select body1" id="fc-{{s.no}}-{{v.key}}" aria-invalid="{{s.catInvalid}}" aria-describedby="fch-{{s.no}}-{{v.key}}">
+                                <option value="" selected>하위 카테고리를 선택하세요</option>
+                                <optgroup label="식사"><option>한식</option></optgroup>
+                                <optgroup label="음료"><option>커피</option></optgroup>
+                                <optgroup label="디저트"><option>베이커리</option></optgroup>
+                              </select>
+                            </sc-if>
+                            <sc-if value="{{s.catKor}}" hint-placeholder-val="{{ true }}">
+                              <select class="input select body1" id="fc-{{s.no}}-{{v.key}}" disabled="{{s.disabled}}">
+                                <option value="">하위 카테고리를 선택하세요</option>
+                                <optgroup label="식사"><option selected>한식</option></optgroup>
+                                <optgroup label="음료"><option>커피</option></optgroup>
+                                <optgroup label="디저트"><option>베이커리</option></optgroup>
+                              </select>
+                            </sc-if>
+                            <svg class="icon selectChevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                          </div>
+                          <sc-if value="{{s.catInvalid}}" hint-placeholder-val="{{ false }}">
+                            <div class="fieldMeta label2" id="fch-{{s.no}}-{{v.key}}"><div class="fieldError label2 medium" role="alert"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg><span>하위 카테고리를 선택해 주세요.</span></div></div>
+                          </sc-if>
+                        </div>
+
+                        <fieldset class="field">
+                          <legend class="fieldLabel label1 bold">주문 상태 <span class="fieldRequired label2 medium">필수</span></legend>
+                          <div class="choiceGroup">
+                            <label class="choice"><input type="radio" name="fo-{{s.no}}-{{v.key}}" value="Y" checked disabled="{{s.disabled}}"><span class="choiceBox body1"><span class="radioMark"></span>주문 가능</span></label>
+                            <label class="choice"><input type="radio" name="fo-{{s.no}}-{{v.key}}" value="N" disabled="{{s.disabled}}"><span class="choiceBox body1"><span class="radioMark"></span>주문 불가</span></label>
+                          </div>
+                        </fieldset>
+
+                        <div class="formActions">
+                          <a class="btn btnSecondary label1 bold" href="03-menu-detail.dc.html" aria-disabled="{{s.disabled}}">취소</a>
+                          <sc-if value="{{s.btnSave}}" hint-placeholder-val="{{ true }}">
+                            <button type="submit" class="btn btnPrimary label1 bold">저장</button>
+                          </sc-if>
+                          <sc-if value="{{s.btnBusy}}" hint-placeholder-val="{{ false }}">
+                            <button type="submit" class="btn btnPrimary label1 bold" aria-busy="true" aria-disabled="true"><svg class="icon spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>저장 중…</button>
+                            <span class="srOnly" role="status">메뉴를 저장하는 중입니다</span>
+                          </sc-if>
+                          <sc-if value="{{s.btnRetry}}" hint-placeholder-val="{{ false }}">
+                            <button type="submit" class="btn btnPrimary label1 bold"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>다시 저장</button>
+                          </sc-if>
+                        </div>
+
+                      </form>
+                    </div>
+                  </main>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+
+      <!-- 9~12 상세 상태 -->
+      <sc-for list="{{detailStates}}" as="s" hint-placeholder-count="4">
+        <div class="stateBlock">
+          <div class="stateHead"><span class="stateNo label1 bold">{{s.no}}</span><h3 class="heading2 bold">{{s.title}}</h3></div>
+          <p class="body2-reading muted" style="max-width: 1100px">{{s.desc}}</p>
+          <div class="frameRow">
+            <sc-for list="{{s.views}}" as="v" hint-placeholder-count="2">
+              <div class="frameItem">
+                <div class="frameLabel"><span class="label1 bold">{{v.label}}</span><span class="chip label2 medium">{{v.tag}}</span></div>
+                <div class="frame {{v.frameClass}}" data-theme="{{v.theme}}">
+                  <main class="siteMain">
+                    <div class="page page--narrow">
+                      <div class="pageHeader pageHeader--bottom">
+                        <div class="pageHeaderText">
+                          <a class="backLink label1 medium" href="02-menu-list.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>메뉴 목록으로</a>
+                          <h1 class="pageTitle title3 bold">메뉴 상세</h1>
+                        </div>
+                        <div class="pageActions pageActions--stack">
+                          <a class="btn btnSecondary label1 bold" href="04-menu-form.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/></svg>수정</a>
+                          <button type="button" class="btn btnDanger label1 bold"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>삭제</button>
+                        </div>
+                      </div>
+
+                      <sc-if value="{{s.saved}}" hint-placeholder-val="{{ false }}">
+                        <div class="alert alertPositive" role="status">
+                          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>
+                          <div class="alertBody"><span class="body2 bold">메뉴를 저장했습니다</span><span class="body2">‘소고기 비빔밥’ 메뉴의 변경 내용이 반영되었습니다.</span></div>
+                          <button type="button" class="btn btnIcon alertClose" aria-label="알림 닫기"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+                        </div>
+                      </sc-if>
+
+                      <section class="panel" aria-label="메뉴 정보">
+                        <dl class="specList">
+                          <div class="specItem specItem--wide"><dt class="specLabel label1 medium">메뉴 이름</dt><dd class="specValue title3 bold">소고기 비빔밥</dd></div>
+                          <div class="specItem"><dt class="specLabel label1 medium">가격</dt><dd class="specValue heading2 bold">11,000원</dd></div>
+                          <div class="specItem"><dt class="specLabel label1 medium">분류</dt><dd class="specValue body1 medium">한식</dd></div>
+                          <div class="specItem"><dt class="specLabel label1 medium">주문 상태</dt><dd class="specValue"><span class="badge badgePositive label2 bold"><svg class="icon iconSm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>주문 가능</span></dd></div>
+                          <div class="specItem"><dt class="specLabel label1 medium">메뉴 번호</dt><dd class="specValue body1 medium">7</dd></div>
+                        </dl>
+                      </section>
+                    </div>
+                  </main>
+
+                  <sc-if value="{{s.dialog}}" hint-placeholder-val="{{ false }}">
+                    <div class="overlay">
+                      <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dt-{{s.no}}-{{v.key}}" aria-describedby="dd-{{s.no}}-{{v.key}}">
+                        <div class="dialogText">
+                          <h2 class="heading2 bold" id="dt-{{s.no}}-{{v.key}}">‘소고기 비빔밥’ 메뉴를 삭제할까요?</h2>
+                          <p class="body2-reading muted" id="dd-{{s.no}}-{{v.key}}">삭제하면 목록에서 사라지고 되돌릴 수 없습니다.</p>
+                          <p class="label2 muted">메뉴 번호 7 · 11,000원 · 한식</p>
+                        </div>
+                        <sc-if value="{{s.dlgFailed}}" hint-placeholder-val="{{ false }}">
+                          <div class="alert alertNegative" role="alert">
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+                            <div class="alertBody"><span class="body2 bold">삭제하지 못했습니다</span><span class="body2">서버에서 응답이 없습니다. 잠시 후 다시 시도해 주세요.</span></div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{s.dlgConfirm}}" hint-placeholder-val="{{ true }}">
+                          <div class="dialogActions">
+                            <button type="button" class="btn btnSecondary isFocus label1 bold">취소</button>
+                            <button type="button" class="btn btnDangerSolid label1 bold">삭제</button>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{s.dlgBusy}}" hint-placeholder-val="{{ false }}">
+                          <div class="dialogActions">
+                            <button type="button" class="btn btnSecondary label1 bold" aria-disabled="true">취소</button>
+                            <button type="button" class="btn btnDangerSolid label1 bold" aria-busy="true" aria-disabled="true"><svg class="icon spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>삭제 중…</button>
+                          </div>
+                          <span class="srOnly" role="status">메뉴를 삭제하는 중입니다</span>
+                        </sc-if>
+                        <sc-if value="{{s.dlgFailed}}" hint-placeholder-val="{{ false }}">
+                          <div class="dialogActions">
+                            <button type="button" class="btn btnSecondary label1 bold">취소</button>
+                            <button type="button" class="btn btnDangerSolid isFocus label1 bold"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>다시 삭제</button>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":3228,"height":8200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const desktop = { key: 'd', label: '데스크톱', tag: '본문 1040px', frameClass: 'frame--slice', theme: 'light', sk: [1, 2, 3] };
+    const mobile = { key: 'm', label: '모바일', tag: '390px', frameClass: 'frame--mobile', theme: 'light', sk: [1, 2] };
+    const mobileDark = { ...mobile, tag: '390px · 다크', theme: 'dark' };
+    const views = [desktop, mobile];
+    const viewsDark = [desktop, mobileDark];
+
+    // 폼 상태 6·7·8 (마크업 하나를 공유)
+    const formBase = { backText: '메뉴 상세로', nameFocus: '', nameInvalid: false, nameHelp: true, priceInvalid: false, priceHelp: true,
+      catInvalid: false, catNone: false, catKor: true, disabled: false, btnSave: true, btnBusy: false, btnRetry: false, failed: false };
+    const formStates = [
+      { ...formBase, no: '6', title: '필드별 입력 오류', pageTitle: '메뉴 등록', backText: '메뉴 목록으로', views,
+        desc: '저장을 누른 뒤 검증에 실패한 모습. 오류 필드는 테두리 + 아이콘 + 문장(role=alert)으로 알리고 aria-invalid·aria-describedby 로 연결합니다. 포커스는 첫 오류(이름)로 이동합니다. 문구: 이름 필수·100자 이내 / 가격 0 이상의 정수 / 하위 카테고리 필수.',
+        name: '', nameCount: 0, price: '-500', nameFocus: 'isFocus', nameInvalid: true, nameHelp: false, priceInvalid: true, priceHelp: false,
+        catNone: true, catKor: false, catInvalid: true },
+      { ...formBase, no: '7', title: '저장 중', pageTitle: '메뉴 수정', views,
+        desc: '저장 요청을 보낸 뒤 응답을 기다리는 동안. 입력·선택·취소를 모두 잠가 중복 제출을 막고, 저장 버튼은 회전 아이콘과 “저장 중…”으로 바뀝니다(aria-busy). 스크린리더에는 “메뉴를 저장하는 중입니다”를 알립니다.',
+        name: '소고기 비빔밥', nameCount: 7, price: '11,000', disabled: true, btnSave: false, btnBusy: true },
+      { ...formBase, no: '8', title: '저장 실패', pageTitle: '메뉴 수정', views: viewsDark,
+        desc: '네트워크 또는 서버 오류로 저장하지 못한 경우. 입력값은 그대로 두고 폼 위에 알림(role=alert)을 띄우며 저장 버튼이 “다시 저장”으로 바뀝니다. 모바일은 다크 예시입니다.',
+        name: '소고기 비빔밥', nameCount: 7, price: '11,000', failed: true, btnSave: false, btnRetry: true },
+    ];
+
+    // 상세 상태 9~12 (마크업 하나를 공유)
+    const detailBase = { saved: false, dialog: false, dlgConfirm: false, dlgBusy: false, dlgFailed: false };
+    const detailStates = [
+      { ...detailBase, no: '9', title: '저장 성공', views, saved: true,
+        desc: '저장이 끝나면 상세 화면으로 이동하고 위쪽에 성공 알림(role=status)을 보여 줍니다. 닫을 수 있습니다. 등록 뒤에는 같은 자리에 “메뉴를 등록했습니다”가 뜹니다.' },
+      { ...detailBase, no: '10', title: '삭제 확인', views, dialog: true, dlgConfirm: true,
+        desc: '삭제를 누르면 메뉴 이름이 들어간 확인창이 뜹니다. 첫 포커스는 안전한 “취소”, Esc 로도 닫힙니다. 삭제 버튼만 위험(채움) 스타일을 씁니다.' },
+      { ...detailBase, no: '11', title: '삭제 중', views, dialog: true, dlgBusy: true,
+        desc: '삭제 요청을 기다리는 동안 취소와 삭제를 모두 잠그고 “삭제 중…”을 보여 줍니다. 성공하면 목록으로 이동합니다.' },
+      { ...detailBase, no: '12', title: '삭제 실패', views: viewsDark, dialog: true, dlgFailed: true,
+        desc: '요청이 실패하면 확인창을 닫지 않고 그 안에 오류 알림을 보여 줍니다. 버튼은 “취소”와 “다시 삭제”. 메뉴는 그대로 남아 있습니다. 모바일은 다크 예시입니다.' },
+    ];
+    return { views, viewsDark, formStates, detailStates };
+  }
+}
+</script>
+</body>
+</html>
