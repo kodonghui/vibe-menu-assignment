@@ -37,18 +37,6 @@
 [과제 현황판](https://app.notion.com/p/3ebbf16cc3ec817f9f9cc0456adf2b18) /
 [현재 작업 기록](https://app.notion.com/p/3ebbf16cc3ec81f3bd96f0656b028432)
 
-## 백과사전 읽기와 보충
-
-HTML 파일 하나로 오프라인에서 읽을 수 있습니다. 검색·목차·용어 카드·등록 흐름 6단계·테마 전환을 제공합니다.
-내용 원본은 학습 저장소의 `private-notes/data/vibe-menu-encyclopedia.jsonl`이며 HTML과 Markdown은 생성 결과입니다.
-다른 학습 노트나 전체 학습 색인을 다시 만들지 않고 이 과제 자료만 갱신합니다.
-
-`scripts/build-encyclopedia.py`는 부모 학습 저장소의 JSONL·`scripts/study_note.py`·`scripts/lib/diagram.py`를 사용합니다.
-이 과제만 복제한 저장소에서는 생성 결과인 HTML/Markdown을 읽으세요. 앱 실행에는 이 생성 과정이 필요하지 않습니다.
-
-현재 열람 주소는 http://localhost:5190/encyclopedia.html 입니다.
-열람 서버가 꺼졌으면 HTML 파일을 직접 열거나 아래 명령으로 다시 실행합니다.
-이미 5190에서 실행 중이면 두 번째 서버를 띄우지 않습니다.
 
 ~~~powershell
 python -m http.server 5190 --bind 127.0.0.1 --directory docs
@@ -163,35 +151,4 @@ H2 파일은 `backend/.runtime/data/vibe-menu.mv.db`에 있습니다. 이 대체
 - 토큰 원본은 frontend/design/montage.tokens.json입니다. tokens.css를 직접 고치지 않습니다.
 - [API 계약](docs/api-contract.md)에서 응답 키·가격 초과 조건·페이지 1 시작·삭제 상태를 확인하세요.
 
-## 검사와 명세 갱신
 
-~~~powershell
-Set-Location backend
-.\gradlew.bat test bootJar --console=plain
-
-Set-Location '..\frontend'
-npm.cmd run lint
-npm.cmd run build
-
-Set-Location '..'
-node scripts/check-tokens.mjs
-node scripts/verify-api.mjs
-node scripts/export-api.mjs
-~~~
-
-API 검사·명세 추출은 서버가 실행 중일 때 사용합니다.
-API 검사는 자신이 만든 검사 메뉴만 정리하며 기존 예시 메뉴를 변경하지 않습니다.
-Gradle 단위 테스트는 격리된 H2 메모리 DB를 사용합니다. MySQL 연결·영속화 검증은 실행 서버의 API·브라우저 검사로 별도 확인합니다.
-[검증 결과](docs/verification.md)는 실제 실행 범위와 아직 남은 일을 구분합니다.
-
-## 출처와 제출
-
-[출처 기록](docs/sources.md)에 재사용한 강의 서버·API 어댑터·토큰과 새 구현을 구분합니다.
-백엔드와 디자인 토큰은 강의가 허용한 자료를 재사용하며, 참고 완성본의 화면 디자인을 그대로 복제하지 않았습니다.
-디자인은 사용자가 전달한 Claude Design 결과를 기준으로 합니다. 실제 데이터·집계는 메뉴 API 응답을 사용합니다.
-
-과제 앱의 backend·frontend는 학습 저장소의 일반 폴더로 관리합니다.
-학습 백과사전 Sites와 디자인 Sites 초안은 별도 관리되며 제출용 Git에서 제외합니다.
-학습 저장소의 이 폴더만 subtree로 분리해 backend·frontend·실행 안내를 함께 제출합니다.
-DB 파일·실제 환경변수·node_modules·빌드 결과·학습 저장소의 다른 폴더는 포함하지 않습니다.
-배포 URL은 공지의 명시된 제출 항목이 아닙니다. GitHub URL을 개인별 Discord 제출 스레드에 남겨야 실제 제출이 끝납니다.
