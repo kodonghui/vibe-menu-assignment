@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router';
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router';
 import { fetchAllMenus, fetchMenuPage, searchMenusOverPrice } from '../api/menu.js';
 import { fetchCategories, onlyChildren } from '../api/category.js';
 import useResource from '../hooks/useResource.js';
@@ -10,17 +10,28 @@ import Notice from '../components/Notice.jsx';
 import EmptyState from '../components/EmptyState.jsx';
 import Pagination from '../components/Pagination.jsx';
 import styles from '../components/MenuUi.module.css';
+import { MENU_PAGE_SIZE, normalizeMenuQuery } from './menuQuery.js';
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = MENU_PAGE_SIZE;
 const loadCategories = signal => fetchCategories(signal);
 
 export default function MenuListPage() {
+    const [params] = useSearchParams();
+    const location = useLocation();
+    const normalized = normalizeMenuQuery(params).toString();
+    if (normalized !== params.toString()) {
+        return <Navigate to={{ pathname: location.pathname, search: normalized ? '?' + normalized : '' }} replace state={location.state} />;
+    }
+    return <MenuList />;
+}
+
+function MenuList() {
     const [params, setParams] = useSearchParams();
     const location = useLocation();
     const keyword = params.get('q') || '';
     const category = params.get('category') || '';
     const price = params.get('price') || '';
-    const page = Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1);
+    const page = Number(params.get('page') || '1');
     const filtering = keyword !== '' || category !== '' || price !== '';
     const categories = useResource(loadCategories, 'categories');
     const load = useCallback(async signal => {
@@ -65,7 +76,9 @@ export default function MenuListPage() {
         setParams(next);
     }
 
-    const condition = [keyword && `이름 ‘${keyword}’`, category && (categories.data || []).find(c => String(c.categoryCode) === category)?.categoryName,
+    const children = onlyChildren(categories.data || []);
+    const selectedCategory = children.find(c => String(c.categoryCode) === category);
+    const condition = [keyword && `이름 ‘${keyword}’`, category && (selectedCategory?.categoryName || `카테고리 번호 ${category}`),
         price && `${Number(price).toLocaleString('ko-KR')}원 초과`].filter(Boolean).join(' · ');
     const reset = () => setParams({ page: '1' });
     const outsidePage = resource.data && resource.data.totalElements > 0 && page > resource.data.totalPages;
@@ -77,6 +90,7 @@ export default function MenuListPage() {
         </div>
         {location.state?.message && <Notice key={location.key} title={location.state.message} dismissible />}
         <form key={params.toString()} onSubmit={filter} className={`${styles.panel} ${styles.filterPanel}`} role="search" aria-label="메뉴 찾기">
+            {(categories.loading || categories.error) && category && <input type="hidden" name="category" value={category} />}
             <div className={`${styles.field} ${styles.fieldSearch}`}>
                 <label className={`${styles.fieldLabel} label1 bold`} htmlFor="menu-keyword">이름 검색</label>
                 <div className={styles.control}><Icon name="search" className={styles.controlIcon} />
@@ -88,7 +102,8 @@ export default function MenuListPage() {
                 <div className={styles.control}><select key={categories.loading ? 'loading' : 'ready'} id="menu-category-filter" className={`${styles.input} ${styles.select} body1`} name="category" defaultValue={category}
                     disabled={categories.loading || !!categories.error}>
                     <option value="">전체 카테고리</option>
-                    {onlyChildren(categories.data || []).map(item => <option key={item.categoryCode} value={item.categoryCode}>{item.categoryName}</option>)}
+                    {category && !selectedCategory && <option value={category}>카테고리 번호 {category}</option>}
+                    {children.map(item => <option key={item.categoryCode} value={item.categoryCode}>{item.categoryName}</option>)}
                 </select><Icon name="chevron" className={styles.selectChevron} /></div>
             </div>
             <div className={styles.field}>

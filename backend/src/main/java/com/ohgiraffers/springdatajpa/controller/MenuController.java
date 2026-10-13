@@ -151,9 +151,11 @@ public class MenuController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = ResponseMessage.class)))
+                    content = @Content(schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "400", description = "지원하지 않는 정렬 필드 또는 방향",
+                    content = @Content(schema = @Schema(hidden = true)))
     })
-    @Parameter(name = "sortBy", description = "정렬 기준 필드 (menuCode, menuName, menuPrice 등)")
+    @Parameter(name = "sortBy", description = "정렬 기준 필드 (menuCode, menuName, menuPrice, orderableStatus, category.categoryCode, category.categoryName)")
     @Parameter(name = "direction", description = "정렬 방향. asc 또는 desc")
     @GetMapping("/pages/sort")
     public ResponseEntity<ResponseMessage> findMenuPageWithSort(
@@ -162,8 +164,7 @@ public class MenuController {
             @RequestParam(defaultValue = "asc") String direction
     ) {
         // 정렬 방향 설정
-        Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction) ?
-                Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort.Direction sortDirection = Sort.Direction.fromString(direction);
 
         // 정렬 객체 생성
         Sort sort = Sort.by(sortDirection, sortBy);
@@ -289,7 +290,8 @@ public class MenuController {
             description = "새 메뉴를 등록한다. " +
                     "요청 본문에는 menuName, menuPrice, categoryCode, orderableStatus 를 담는다. " +
                     "menuCode 는 서버가 채우므로 보내지 않는다. " +
-                    "orderableStatus 는 'Y' 또는 'N' 한 글자다. " +
+                    "이름은 공백만으로 구성할 수 없고 100자 이내여야 하며, 가격은 0부터 2147483647 사이 정수다. " +
+                    "실제 하위 카테고리 코드를 선택해야 하고, orderableStatus 는 'Y' 또는 'N' 한 글자다. " +
                     "응답의 result.menu 에 등록된 MenuDTO 가 담긴다."
     )
     @ApiResponses({
@@ -331,12 +333,15 @@ public class MenuController {
     @Operation(
             summary = "메뉴 수정",
             description = "메뉴 코드에 해당하는 메뉴를 수정한다. " +
-                    "요청 본문은 등록과 같은 모양이고, 바꾸지 않을 값도 함께 보낸다. " +
+                    "요청 본문은 등록과 같은 모양과 검증 규칙을 사용하며, 바꾸지 않을 값도 함께 보낸다. " +
+                    "카테고리를 생략하거나 잘못된 값을 보내면 400이며 기존 데이터는 변경하지 않는다. " +
                     "응답의 result.menu 에 수정된 MenuDTO 가 담긴다."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "400", description = "필수값·가격·하위 카테고리·주문 상태가 올바르지 않음",
+                    content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "404", description = "해당 코드의 메뉴가 없음",
                     content = @Content(schema = @Schema(hidden = true)))
     })

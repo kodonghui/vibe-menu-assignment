@@ -14,9 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class MenuService {
+
+	private static final Set<String> SORT_FIELDS = Set.of(
+			"menuCode", "menuName", "menuPrice", "orderableStatus",
+			"category.categoryCode", "category.categoryName");
 
 	private final MenuRepository menuRepository;
 	private final CategoryRepository categoryRepository;
@@ -70,8 +75,37 @@ public class MenuService {
 	/* 설명. 전달받은 카테고리 코드로 Category를 조회하며, 없으면 예외를 발생시킨다. */
 	private Category findCategoryOrThrow(int categoryCode) {
 
-		return categoryRepository.findById(categoryCode)
+		Category category = categoryRepository.findById(categoryCode)
 				.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 카테고리 코드입니다: " + categoryCode));
+		if (category.getParentCategory() == null) {
+			throw new IllegalArgumentException("메뉴에는 하위 카테고리를 선택해야 합니다.");
+		}
+		return category;
+	}
+
+	/* 등록과 전체 수정에 같은 검증을 적용한다. DB를 변경하기 전에 검사한다. */
+	private void validateMenu(MenuDTO menuDTO) {
+		if (menuDTO == null || menuDTO.getMenuName() == null || menuDTO.getMenuName().isBlank()) {
+			throw new IllegalArgumentException("메뉴 이름은 필수입니다.");
+		}
+		if (menuDTO.getMenuName().length() > 100) {
+			throw new IllegalArgumentException("메뉴 이름은 100자 이내여야 합니다.");
+		}
+		if (menuDTO.getMenuPrice() == null || menuDTO.getMenuPrice() < 0) {
+			throw new IllegalArgumentException("가격은 0 이상의 정수여야 합니다.");
+		}
+		if (menuDTO.getCategoryCode() <= 0) {
+			throw new IllegalArgumentException("유효한 하위 카테고리를 선택해야 합니다.");
+		}
+		if (!"Y".equals(menuDTO.getOrderableStatus()) && !"N".equals(menuDTO.getOrderableStatus())) {
+			throw new IllegalArgumentException("주문 상태는 Y 또는 N이어야 합니다.");
+		}
+	}
+
+	private void validatePageOffset(Pageable pageable) {
+		if (pageable.getOffset() > Integer.MAX_VALUE) {
+			throw new IllegalArgumentException("요청한 페이지가 지원 범위를 벗어났습니다.");
+		}
 	}
 
 	/* 목차. 1. 메뉴 코드로 메뉴 조회 */
@@ -123,6 +157,7 @@ public class MenuService {
 	 * @return 페이징 처리된 메뉴 정보를 담은 Page&lt;MenuDTO&gt; 객체
 	 */
 	public Page<MenuDTO> findMenuList(Pageable pageable) {
+		validatePageOffset(pageable);
 		// 페이지 번호와 크기는 그대로 사용하고, 이 목록에 적용할 정렬 기준만 지정한다.
 		pageable = PageRequest.of(pageable.getPageNumber(),
 					pageable.getPageSize(),
@@ -155,6 +190,12 @@ public class MenuService {
 	 * @return 페이징 및 정렬이 적용된 메뉴 정보를 담은 Page&lt;MenuDTO&gt; 객체
 	 */
 	public Page<MenuDTO> findMenuListWithSort(Pageable pageable, Sort sort) {
+		validatePageOffset(pageable);
+		for (Sort.Order order : sort) {
+			if (!SORT_FIELDS.contains(order.getProperty())) {
+				throw new IllegalArgumentException("지원하지 않는 정렬 필드입니다: " + order.getProperty());
+			}
+		}
 		// 페이지 번호와 크기는 넘어온 값을 그대로 쓰고, 정렬 기준만 교체한다.
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
@@ -194,6 +235,7 @@ public class MenuService {
 	 */
 	@Transactional
 	public MenuDTO saveMenu(MenuDTO menuDTO) {
+		validateMenu(menuDTO);
 
 		// 카테고리 코드 유효성 검사 겸, 연관 관계에 넣을 Category 엔티티 조회
 		Category category = findCategoryOrThrow(menuDTO.getCategoryCode());
@@ -208,7 +250,7 @@ public class MenuService {
 	 * 메뉴 정보를 수정한다.
 	 *
 	 * <p>메뉴 코드로 기존 메뉴를 조회하고, 전달받은 DTO의 정보로 메뉴를 수정한다.
-	 * 카테고리 코드가 전달된 경우 유효성을 검사한 뒤 연관 관계를 함께 변경한다.</p>
+	 * 등록과 같은 전체 본문을 검증한 뒤 카테고리 연관 관계도 함께 변경한다.</p>
 	 *
 	 * @param menuCode 수정할 메뉴의 코드
 	 * @param menuDTO 수정할 메뉴 정보
@@ -221,14 +263,15 @@ public class MenuService {
 		Menu foundMenu = menuRepository.findById(menuCode)
 				.orElseThrow(() -> new MenuNotFoundException("해당 메뉴가 존재하지 않습니다. menuCode=" + menuCode));
 
+		validateMenu(menuDTO);
+		Category category = findCategoryOrThrow(menuDTO.getCategoryCode());
+
 		foundMenu.setMenuName(menuDTO.getMenuName());
 		foundMenu.setMenuPrice(menuDTO.getMenuPrice());
 		foundMenu.setOrderableStatus(menuDTO.getOrderableStatus());
 
 		/* 설명. 카테고리 변경은 코드값이 아니라 연관 관계(Category 엔티티) 자체를 바꿔줘야 실제로 반영된다. */
-		if (menuDTO.getCategoryCode() > 0) {
-			foundMenu.setCategory(findCategoryOrThrow(menuDTO.getCategoryCode()));
-		}
+		foundMenu.setCategory(category);
 
 		/* 설명. 조회해온 엔티티는 영속 상태이므로, 값만 바꿔두면 트랜잭션이 끝날 때
 		 *  변경 감지(dirty checking)에 의해 UPDATE 구문이 자동으로 실행된다.

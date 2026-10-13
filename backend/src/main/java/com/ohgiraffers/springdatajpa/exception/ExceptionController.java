@@ -3,6 +3,9 @@ package com.ohgiraffers.springdatajpa.exception;
 import com.ohgiraffers.springdatajpa.common.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -59,6 +62,16 @@ public class ExceptionController {
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /* JSON과 필수 쿼리/경로 값의 파싱 오류도 클라이언트 오류로 응답한다. */
+    @ExceptionHandler({HttpMessageNotReadableException.class,
+            MissingServletRequestParameterException.class,
+            MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ErrorResponse> handleInvalidRequest(Exception e) {
+        return new ResponseEntity<>(new ErrorResponse(
+                "ERROR_CODE_00003", "잘못된 요청 값", "요청 본문과 필수 입력값의 형식을 확인해 주세요."),
+                HttpStatus.BAD_REQUEST);
     }
 
     /* 설명. 위에서 처리하지 못한 나머지 예외 -> 500 Internal Server Error

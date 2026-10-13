@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { fetchMenu, removeMenu } from '../api/menu.js';
 import { toMessage } from '../api/client.js';
@@ -12,6 +12,10 @@ import styles from '../components/MenuUi.module.css';
 
 export default function MenuDetailPage() {
     const { menuCode } = useParams();
+    return <MenuDetail key={menuCode} menuCode={menuCode} />;
+}
+
+function MenuDetail({ menuCode }) {
     const navigate = useNavigate();
     const location = useLocation();
     const load = useCallback(signal => fetchMenu(menuCode, signal), [menuCode]);
@@ -20,17 +24,30 @@ export default function MenuDetailPage() {
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState(null);
     const deleteButton = useRef(null);
+    const pending = useRef(false);
+    const active = useRef(false);
+    useEffect(() => {
+        active.current = true;
+        return () => { active.current = false; };
+    }, []);
     async function remove() {
-        if (busy) return;
+        if (pending.current) return;
+        pending.current = true;
         setBusy(true);
         setError(null);
         try {
             await removeMenu(menuCode);
+            if (!active.current) return;
             navigate('/', { replace: true, state: { message: '메뉴를 삭제했습니다.' } });
         } catch (e) {
-            setError(toMessage(e));
+            if (!active.current) return;
+            if (e.response?.status === 404) {
+                setConfirm(false);
+                resource.retry();
+            } else setError(toMessage(e));
         } finally {
-            setBusy(false);
+            pending.current = false;
+            if (active.current) setBusy(false);
         }
     }
     return <section className={`${styles.page} ${styles.pageNarrow}`} aria-labelledby="detail-title">

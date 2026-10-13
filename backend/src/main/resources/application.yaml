@@ -6,6 +6,7 @@ spring:
   jackson:
     deserialization:
       fail-on-null-for-primitives: false
+      accept-float-as-int: false
   data:
     web:
       pageable:

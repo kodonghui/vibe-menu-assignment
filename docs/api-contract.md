@@ -56,16 +56,19 @@ sequenceDiagram
 | GET /api/menus/pages/sort | page, size, sortBy, direction | 위 페이지 응답 + sort, direction | 200 |
 | GET /api/menus/{menuCode} | 메뉴 코드 | menu: MenuDTO | 200 / 없는 메뉴 404 |
 | GET /api/menus/search | menuPrice | menus, searchPrice | 200 |
-| POST /api/menus | 등록 본문 | menu: MenuDTO | 201 / 잘못된 카테고리 400 |
-| PUT /api/menus/{menuCode} | 메뉴 코드, 등록과 같은 전체 본문 | menu: MenuDTO | 200 / 없는 메뉴 404 |
+| POST /api/menus | 등록 본문 | menu: MenuDTO | 201 / 잘못된 입력 400 |
+| PUT /api/menus/{menuCode} | 메뉴 코드, 등록과 같은 전체 본문 | menu: MenuDTO | 200 / 잘못된 입력 400 / 없는 메뉴 404 |
 | DELETE /api/menus/{menuCode} | 메뉴 코드 | deletedMenuCode | 200 / 없는 메뉴 404 |
 | GET /api/categories | 없음 | categories: CategoryDTO[] | 200 |
 | GET /api/categories/{categoryCode} | 카테고리 코드 | category: CategoryDTO | 200 / 없는 카테고리 404 |
 
 가격 검색은 기준값 **초과(>)**이다. 이름 검색과 카테고리 필터 API는 없으므로 전체 목록을 받아 React에서 필터링·페이징한다.
 페이지 요청·응답의 번호는 모두 1부터다. size 최대 100이다.
+페이지 오프셋 `(page - 1) × size`가 JPA의 int 최대값을 넘으면 400이다.
 삭제의 실제 HTTP는 200이고 본문 httpStatus는 204다. 원래 강의 계약을 유지한다.
 정렬 API는 참고용으로 보존하며 현재 기본 화면은 목록의 서버 페이징을 사용한다.
+정렬 필드는 menuCode, menuName, menuPrice, orderableStatus, category.categoryCode,
+category.categoryName을 지원한다. 그 밖의 필드나 asc/desc 이외 방향은 400이다.
 
 ## DTO
 
@@ -87,8 +90,10 @@ refCategoryCode(정수 또는 null), refCategoryName(문자열 또는 null).
 ~~~
 카테고리 코드는 GET /api/categories에서 실제 조회한 하위 코드를 사용한다.
 등록 때 menuCode·categoryName을 보내지 않는다.
-React는 이름 필수/100자 이내, 가격 0 이상 int 범위 정수, 하위 카테고리 필수를 검증한다.
-서버의 별도 검증·실패는 실제 HTTP와 오류 응답을 따른다.
+React와 서버는 이름 필수/100자 이내, 가격 0 이상 int 범위 정수, 유효한 하위 카테고리를 검증한다.
+서버는 주문 상태가 Y/N인지도 검사하며, 등록과 전체 수정에 같은 규칙을 적용한다.
+가격 누락·null·소수·int 범위 초과, 잘못된 JSON·필수 쿼리 누락·숫자 형식 오류는 HTTP 400이다.
+잘못된 수정 요청은 기존 메뉴를 변경하지 않는다. 실제 HTTP와 오류 응답으로 실패를 판단한다.
 
 오류 코드: ERROR_CODE_00001 메뉴 없음 / ERROR_CODE_00002 카테고리 없음 /
 ERROR_CODE_00003 잘못된 요청 값 / ERROR_CODE_99999 내부 오류.

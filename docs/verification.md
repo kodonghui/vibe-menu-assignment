@@ -1,4 +1,38 @@
-# 실제 검증 결과 · 2026-09-30
+# 실제 검증 결과
+
+## 제출 전 회귀 검사 · 2026-10-13
+
+기존 Claude/Montage 화면과 README 구성, 기본 MySQL 프로필을 유지하고 경계 오류를 보완했습니다.
+
+- 서버: 이름·필수 가격·int 정수 범위·하위 카테고리·Y/N을 등록과 수정에서 동일하게 검사합니다. 잘못된 전체 수정은 기존 데이터를 보존합니다. 잘못된 JSON·쿼리·정렬과 JPA 범위를 넘는 페이지 오프셋은 500 대신 400으로 처리합니다.
+- 화면: 잘못된 페이지·가격·카테고리 URL을 API 호출 전에 정리합니다. 카테고리 조회 실패 중에도 선택 조건을 보존합니다. 늦게 도착한 삭제 응답이 새 화면으로 이동한 사용자를 다시 목록으로 보내지 않으며, 중복 삭제와 다른 곳에서 이미 삭제된 메뉴를 처리합니다.
+- 클라우드 Linux / Java 17.0.20.1 / Gradle 9.7.1 / Node.js 24.19.0에서 백엔드 `test bootJar` 성공: 기존 서비스 3개와 새 HTTP 회귀 24개, 합계 27개 통과. 테스트 DB는 격리된 H2 메모리 DB입니다.
+- 명시적 dev H2 메모리 서버에서 `node scripts/verify-api.mjs` 통과: 10개 API, CRUD, 가격 초과 경계, 페이지·정렬, 입력 검증·실패한 수정의 데이터 보존, 400/404, 삭제 HTTP 200/본문 204, CORS, Swagger 확인. 검사 메뉴 정리 후 서버를 종료했습니다.
+- 실행 서버에서 `api-docs.json`과 `design-handoff/api-docs.json`을 다시 추출했습니다. 두 사본이 같고 API 연산은 10개입니다.
+- 프런트 `npm ci`, `npm test` 14개, `npm run lint`, `npm run build`, 루트 `node scripts/check-tokens.mjs` 통과. 런타임 라이브러리와 디자인 토큰·CSS는 변경하지 않았습니다.
+- 이 클라우드 셸에서는 소켓 제한으로 MySQL·Chromium 실행을 완료할 수 없었습니다. 위 H2 결과를 실제 MySQL 또는 브라우저 검증으로 간주하지 않습니다. Windows 시작·중단 스크립트도 이번 환경에서는 다시 실행하지 않았습니다.
+- [GitHub Actions](../.github/workflows/verify.yml)에 Java 17 빌드/테스트, 프런트 검사, 별도 MySQL 8.0.46 서비스의 실제 API 검사와 Chromium 브라우저 회귀 12개를 추가했습니다. 브라우저 검사는 실제 API CRUD 1개와 지연·실패·뒤로가기·재시도·모바일·테마 등 격리된 응답을 쓰는 11개입니다. 실행 결과는 해당 커밋의 Actions 기록으로 구분합니다.
+
+### 새 회귀 검사 실행
+
+기존 README대로 과제 MySQL과 백엔드를 실행한 뒤 사용할 수 있습니다.
+
+~~~powershell
+Set-Location backend
+.\gradlew.bat test bootJar --console=plain
+Set-Location ../frontend
+npm.cmd ci
+npm.cmd test
+npm.cmd run lint
+npm.cmd run build
+npx.cmd playwright install chromium
+npm.cmd run test:e2e
+Set-Location ..
+node scripts/check-tokens.mjs
+node scripts/verify-api.mjs
+~~~
+
+브라우저 검사는 5175의 기존 React 서버를 재사용하거나 직접 시작합니다. 실제 CRUD 검사는 고유 이름의 임시 메뉴만 만들고 정리합니다. 이미 실행 중인 백엔드 코드를 바꿨다면 README의 중단·JAR 재빌드·시작 순서로 갱신한 후 검사하세요.
 
 ## MySQL 전환과 실제 연동 검사 · 2026-09-30
 
