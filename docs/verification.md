@@ -9,7 +9,7 @@
 - 클라우드 Linux / Java 17.0.20.1 / Gradle 9.7.1 / Node.js 24.19.0에서 백엔드 `test bootJar` 성공: 기존 서비스 3개와 새 HTTP 회귀 24개, 합계 27개 통과. 테스트 DB는 격리된 H2 메모리 DB입니다.
 - 명시적 dev H2 메모리 서버에서 `node scripts/verify-api.mjs` 통과: 10개 API, CRUD, 가격 초과 경계, 페이지·정렬, 입력 검증·실패한 수정의 데이터 보존, 400/404, 삭제 HTTP 200/본문 204, CORS, Swagger 확인. 검사 메뉴 정리 후 서버를 종료했습니다.
 - 실행 서버에서 `api-docs.json`과 `design-handoff/api-docs.json`을 다시 추출했습니다. 두 사본이 같고 API 연산은 10개입니다.
-- 프런트 `npm ci`, `npm test` 14개, `npm run lint`, `npm run build`, 루트 `node scripts/check-tokens.mjs` 통과. 런타임 라이브러리와 디자인 토큰·CSS는 변경하지 않았습니다.
+- 프런트 `npm ci`, `npm test` 15개, `npm run lint`, `npm run build`, 루트 `node scripts/check-tokens.mjs` 통과. 런타임 라이브러리와 디자인 토큰·CSS는 변경하지 않았습니다.
 - 이 클라우드 셸에서는 소켓 제한으로 MySQL·Chromium 실행을 완료할 수 없었습니다. 위 H2 결과를 실제 MySQL 또는 브라우저 검증으로 간주하지 않습니다. Windows 시작·중단 스크립트도 이번 환경에서는 다시 실행하지 않았습니다.
 - [GitHub Actions](../.github/workflows/verify.yml)에 Java 17 빌드/테스트, 프런트 검사, 별도 MySQL 8.0.46 서비스의 실제 API 검사와 Chromium 브라우저 회귀 12개를 추가했습니다. 브라우저 검사는 실제 API CRUD 1개와 지연·실패·뒤로가기·재시도·모바일·테마 등 격리된 응답을 쓰는 11개입니다. 실행 결과는 해당 커밋의 Actions 기록으로 구분합니다.
 

@@ -4,6 +4,11 @@ export function deferred() {
     return { promise, resolve };
 }
 
+export function isApiRequest(url) {
+    // Vite also serves source modules under /src/api/; never intercept those.
+    return url.pathname.startsWith('/api/');
+}
+
 export async function mockApi(page) {
     const headers = {
         'access-control-allow-origin': new URL(process.env.UI_BASE_URL || 'http://localhost:5175').origin,
@@ -24,7 +29,7 @@ export async function mockApi(page) {
             categoryCode: index < 8 ? 4 : 6, categoryName: index < 8 ? '한식' : '커피', orderableStatus: 'Y',
         })),
     };
-    await page.route('**/api/**', async route => {
+    await page.route(isApiRequest, async route => {
         const request = route.request();
         const url = new URL(request.url());
         const method = request.method();
