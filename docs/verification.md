@@ -12,6 +12,8 @@
 - 프런트 `npm ci`, `npm test` 15개, `npm run lint`, `npm run build`, 루트 `node scripts/check-tokens.mjs` 통과. 런타임 라이브러리와 디자인 토큰·CSS는 변경하지 않았습니다.
 - 이 클라우드 셸에서는 소켓 제한으로 MySQL·Chromium 실행을 완료할 수 없었습니다. 위 H2 결과를 실제 MySQL 또는 브라우저 검증으로 간주하지 않습니다. Windows 시작·중단 스크립트도 이번 환경에서는 다시 실행하지 않았습니다.
 - [GitHub Actions](../.github/workflows/verify.yml)에 Java 17 빌드/테스트, 프런트 검사, 별도 MySQL 8.0.46 서비스의 실제 API 검사와 Chromium 브라우저 회귀 12개를 추가했습니다. 브라우저 검사는 실제 API CRUD 1개와 지연·실패·뒤로가기·재시도·모바일·테마 등 격리된 응답을 쓰는 11개입니다. 실행 결과는 해당 커밋의 Actions 기록으로 구분합니다.
+- **원격 전체 검사 성공:** 앱 코드 커밋 `d2e9423`의 [Actions 실행 기록](https://github.com/kodonghui/vibe-menu-assignment/actions/runs/38401653652)에서 2026-10-13 22:03 KST에 MySQL API 검사와 Chromium 12개가 모두 통과했습니다. 브라우저 검사는 17초에 재시도 없이 12개 성공이며, 실제 등록→수정→삭제 취소→삭제→404 흐름도 포함합니다. 백엔드 테스트·프런트 단위 테스트·lint·빌드·토큰 검사도 같은 실행에서 성공했습니다.
+- 첫 원격 실행에서 모의 API 경로가 Vite 소스 모듈까지 가로채는 테스트 설정 오류를 발견해 수정하고 별도 단위 회귀 검사를 추가했습니다. 위 성공 기록은 수정 후 전체를 다시 실행한 결과입니다. 원본 README와 화면 CSS·토큰은 그대로 유지했습니다.
 
 ### 새 회귀 검사 실행
 
